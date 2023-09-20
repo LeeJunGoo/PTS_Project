@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "558360636725",
+    "firebase_url": "https://plant-project-2c07e-default-rtdb.firebaseio.com",
+    "project_id": "plant-project-2c07e",
+    "storage_bucket": "plant-project-2c07e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:558360636725:android:1e2372eab07266c2a2b07c",
+        "android_client_info": {
+          "package_name": "com.jica.pts"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "558360636725-m2qordilmn20no54dn0dch7fdcho6r37.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTXEJ7VDeognzI15GiDTJ7SjdV9zBMRjg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "558360636725-m2qordilmn20no54dn0dch7fdcho6r37.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

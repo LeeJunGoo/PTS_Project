@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- 이미지 크기 조정 방법 -->
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<item
+    android:drawable="@drawable/icon_calendar3_pen"
+    android:width="20dp"
+    android:height="20dp"
+
+    />
+    <solid android:color="#FFFFFF" />
+</layer-list>

@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">PTS</string>
+
+    <!-- textView 밑줄 긋는 방법 -->
+    <string name="login_name"><u>이준구님</u>, 환영해요 !</string>
+    <string name="file_select"><u>파일 선택</u></string>
+    <string name="password_find"><u>비밀번호 찾기</u></string>
+    <string name="board_write"><u>현재 게시판</u></string>
+
+
+    <!-- textView 두께(bold) 및 색상(color) 변경
+         코드 및 색깔이름으로 변경가능             -->
+    <string name="register_out"><u><font color='red'><b>회원 탈퇴</b></font></u> 입니다.</string>
+
+
+</resources>

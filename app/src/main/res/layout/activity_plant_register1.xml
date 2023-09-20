@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="visible">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/shape_half_circle2"
+        tools:layout_editor_absoluteX="56dp"
+        tools:layout_editor_absoluteY="34dp">
+
+        <EditText
+            android:id="@+id/editTextText5"
+            android:layout_width="280dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="150dp"
+            android:background="@drawable/shape_tetragon1"
+            android:ems="10"
+            android:gravity="center"
+            android:hapticFeedbackEnabled="false"
+            android:hint="식물 백과사전 검색하기"
+            android:inputType="text"
+            android:selectAllOnFocus="false"
+            android:textColorHighlight="#191616"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <ImageView
+            android:id="@+id/imgsearch"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="10dp"
+            app:layout_constraintBottom_toBottomOf="@+id/editTextText5"
+            app:layout_constraintStart_toStartOf="@+id/editTextText5"
+            app:layout_constraintTop_toTopOf="@+id/editTextText5"
+            app:srcCompat="@drawable/icon_search2" />
+
+        <HorizontalScrollView
+            android:id="@+id/horizontalScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:contentDescription="null"
+            android:scrollbars="none"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editTextText5"
+            app:layout_constraintVertical_bias="0.0">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnpltnm1"
+                        android:layout_width="110dp"
+                        android:layout_height="100dp"
+                        android:layout_marginStart="75dp"
+                        android:layout_marginTop="30dp"
+                        android:background="@drawable/shape_tetragon3_button"
+                        android:text="다육식물"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnpltnm2"
+                        android:layout_width="110dp"
+                        android:layout_height="100dp"
+                        android:layout_marginStart="40dp"
+                        android:layout_marginTop="30dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/shape_tetragon3_button"
+                        android:text="다육식물"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toEndOf="@+id/btnpltnm1"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnpltnm4"
+                        android:layout_width="110dp"
+                        android:layout_height="100dp"
+                        android:layout_marginTop="40dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/shape_tetragon3_button"
+                        android:text="다육식물"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/btnpltnm2"
+                        app:layout_constraintTop_toBottomOf="@+id/btnpltnm2" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnpltnm6"
+                        android:layout_width="110dp"
+                        android:layout_height="100dp"
+                        android:layout_marginTop="40dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/shape_tetragon3_button"
+                        android:text="다육식물"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/btnpltnm2"
+                        app:layout_constraintTop_toBottomOf="@+id/btnpltnm4" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnpltnm3"
+                        android:layout_width="110dp"
+                        android:layout_height="100dp"
+                        android:layout_marginTop="40dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/shape_tetragon3_button"
+                        android:text="다육식물"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="@+id/btnpltnm1"
+                        app:layout_constraintTop_toBottomOf="@+id/btnpltnm1" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnpltnm5"
+                        android:layout_width="110dp"
+                        android:layout_height="100dp"
+                        android:layout_marginStart="75dp"
+                        android:layout_marginTop="40dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/shape_tetragon3_button"
+                        android:text="다육식물"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/btnpltnm3" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="75dp">
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnpltnm10"
+                        android:layout_width="110dp"
+                        android:layout_height="100dp"
+                        android:layout_marginTop="40dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/shape_tetragon3_button"
+                        android:text="다육식물"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="@+id/btnpltnm8"
+                        app:layout_constraintTop_toBottomOf="@+id/btnpltnm8" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnpltnm9"
+                        android:layout_width="110dp"
+                        android:layout_height="100dp"
+                        android:layout_marginStart="40dp"
+                        android:layout_marginTop="40dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/shape_tetragon3_button"
+                        android:text="다육식물"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/btnpltnm7" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnpltnm8"
+                        android:layout_width="110dp"
+                        android:layout_height="100dp"
+                        android:layout_marginStart="40dp"
+                        android:layout_marginTop="30dp"
+                        android:layout_marginEnd="75dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/shape_tetragon3_button"
+                        android:text="다육식물"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/btnpltnm7"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnpltnm12"
+                        android:layout_width="110dp"
+                        android:layout_height="100dp"
+                        android:layout_marginTop="40dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/shape_tetragon3_button"
+                        android:text="다육식물"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="@+id/btnpltnm8"
+                        app:layout_constraintTop_toBottomOf="@+id/btnpltnm10" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnpltnm11"
+                        android:layout_width="110dp"
+                        android:layout_height="100dp"
+                        android:layout_marginStart="40dp"
+                        android:layout_marginTop="40dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/shape_tetragon3_button"
+                        android:text="다육식물"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/btnpltnm9" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnpltnm7"
+                        android:layout_width="110dp"
+                        android:layout_height="100dp"
+                        android:layout_marginStart="40dp"
+                        android:layout_marginTop="30dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/shape_tetragon3_button"
+                        android:text="다육식물"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <ImageView
+            android:id="@+id/imageView30"
+            android:layout_width="100dp"
+            android:layout_height="80dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/icon_line3" />
+
+        <ImageView
+            android:id="@+id/imageView27"
+            android:layout_width="41dp"
+            android:layout_height="41dp"
+            android:layout_marginBottom="30dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/icon_scroll" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
