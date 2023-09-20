@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_loding);
 
         btn1= findViewById(R.id.button1);
-
+//ㅓㅑㅐㅓㅐㅑ
 
 
 
