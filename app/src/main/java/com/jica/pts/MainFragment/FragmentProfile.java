@@ -47,15 +47,10 @@ public class FragmentProfile extends Fragment {
     ArrayList<String> arrayList;
     ArrayAdapter adapter;
 
-
+    //DB 객체 선언
     FirebaseFirestore db;
     FirebaseAuth firebaseAuth;
     FirebaseUser CurrentUser;
-
-    //클래스를 배열로 선언하여 해당 위치의 클래스 불러오기
-
-
-
 
 
 
@@ -81,7 +76,6 @@ public class FragmentProfile extends Fragment {
 
 
         arrayList = new ArrayList<String>();
-
         arrayList.add("알림 센터");
         arrayList.add("전문가 뱃지 등록");
         arrayList.add("공지 사항");
@@ -92,7 +86,6 @@ public class FragmentProfile extends Fragment {
         //ListView에 어탭터 연결
         lvProfile.setAdapter(adapter);
 
-
         return view;
     }
 
@@ -100,10 +93,12 @@ public class FragmentProfile extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        //로그인 여부 확인 
         if(CurrentUser != null){
             btnProfileLogin.setText("로그아웃");
             tvProfileID.setText(CurrentUser.getEmail());
 
+            //Board 컬랙션의 board_del의 필드값이 false인 문서 개수 찾기
             db.collection("Board").whereEqualTo("board_del", false).get()
                     .addOnCompleteListener(task -> {
                         if(task.isSuccessful()){
@@ -113,7 +108,8 @@ public class FragmentProfile extends Fragment {
 
                     });
 
-            //로그아웃 버튼 이벤트 핸들러(버튼 하나를 이용하여 현재 로그인 여부를 파악 후 서로 다른 이벤트핸들러 실행)
+            //로그아웃 버튼 이벤트 핸들러
+            //버튼 하나를 이용하여 현재 로그인 여부를 파악 후 서로 다른 이벤트핸들러 실행
             btnProfileLogin.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

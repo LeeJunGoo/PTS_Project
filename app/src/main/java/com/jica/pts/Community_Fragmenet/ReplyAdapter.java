@@ -3,11 +3,9 @@ package com.jica.pts.Community_Fragmenet;
 
 import android.content.Context;
 import android.icu.text.SimpleDateFormat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,16 +18,21 @@ import com.jica.pts.R;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHolder>{
+//변경된 부분 3
+public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHolder> implements OnReplyClickListener {
 
     ArrayList<Reply> replyArrayList;
     Context context;
 
+    //변경된 부분4
+    //클릭 이벤트 처리를 위한 listener
+    OnReplyClickListener listener;
 
     public ReplyAdapter(ArrayList<Reply> replyArrayList, Context context){
         this.replyArrayList = replyArrayList;
         this.context = context;
     }
+
     @NonNull
     @Override
     public ReplyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -55,23 +58,63 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
     }
 
 
-    // Count 필수!!1
+    // Count 필수!!
     @Override
     public int getItemCount() {
         return (replyArrayList != null ? replyArrayList.size() : 0);
     }
 
 
-    public class ReplyViewHolder extends RecyclerView.ViewHolder {
-        TextView tvReplyContent, tvReplyID, tvReplyDate;
+    //변경된 부분6
+    public void setOnItemClickListener(OnReplyClickListener listener) {
+        this.listener = listener;
+
+    }
+
+
+    //변경된 부분5
+    @Override
+    public void onItemClick(ReplyViewHolder viewHolder, View view, int position) {
+        if (listener != null) {
+            // 현재 Adapter객체의 멤버변수인 listener의 onItemclick()메서드를 작동시킨다.
+            // 그런데 listener멤버변수는 아래의 setOnItemClickListener()메서드의 인자로 전달된
+            // 외부에서 만들어진 익명의 클래스 객체이다.
+            listener.onItemClick(viewHolder, view, position);
+
+        }
+    }
+
+
+    //변경된 부분 1
+    //final OnPersonItemClickListener listener==> final(상수) 선언으로 인해 내부에서 변경 불가
+    public class ReplyViewHolder extends RecyclerView.ViewHolder  {
+        //UI 객체 선언
+        TextView tvReplyContent, tvReplyID, tvReplyDate, tvReply;
 
         public ReplyViewHolder(@NonNull View itemView) {
             super(itemView);
-
+            //UI 객체 찾기
             tvReplyContent = itemView.findViewById(R.id.tvReplyContent);
             tvReplyID = itemView.findViewById(R.id.tvReplyID);
             tvReplyDate = itemView.findViewById(R.id.tvReplyDate);
+            tvReply= itemView.findViewById(R.id.tvReply);
 
+
+            //변경된 부분 2
+            tvReply.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int position = getAdapterPosition();
+                    if (listener != null) {
+                        //listener는 현재의 Adpapter 객체를 의미한다.
+                        //그러므로 아래의 코드는 현재 Adapter객체의 onItemClick()메서드를 호출한다.
+                        //현재의 게시글 위치 전송
+
+                        listener.onItemClick(ReplyViewHolder.this, view, position);
+
+                    }
+                }
+            });
 
 
         }

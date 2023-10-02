@@ -63,5 +63,15 @@
                 android:text="새로운 친구가 생겼어요 이름은 이준구라구 할려구용 ㅎㅎ 다들 좋은 하루 되시고 제 꽃 보고 행복하셔여영~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" />
 
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvReply"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:text="답글 작성"
+            android:textColor="#8F8E8E"
+            android:textSize="12sp" />
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

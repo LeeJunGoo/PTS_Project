@@ -37,6 +37,7 @@ public class UserRegisterActivity extends AppCompatActivity {
         // FirebaseAuth 객체 초기화(데이터베이스 연결)
         firebaseAuth = FirebaseAuth.getInstance();
 
+        //UI 객체 찾기
         editTextEmail = findViewById(R.id.etemail);
         etpassWord = findViewById(R.id.etpassWord);
         etpassWordck = findViewById(R.id.etpassWordck);

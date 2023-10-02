@@ -10,7 +10,7 @@
         android:id="@+id/scrollView4"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout8"
+        app:layout_constraintBottom_toTopOf="@+id/LinearReply"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -99,8 +99,9 @@
 
             <ImageButton
                 android:id="@+id/imgGreat"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="5dp"
                 android:layout_marginTop="15dp"
                 android:background="#00FFFFFF"
                 android:contentDescription="null"
@@ -110,15 +111,38 @@
                 app:layout_constraintTop_toBottomOf="@+id/sliderViewPager"
                 app:srcCompat="@drawable/icon_like_normal" />
 
+            <ImageButton
+                android:id="@+id/imgbtnReply"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="5dp"
+                android:background="#00FFFFFF"
+                android:contentDescription="null"
+                android:padding="7dp"
+                android:scaleType="fitXY"
+                app:layout_constraintBottom_toBottomOf="@+id/imgGreat"
+                app:layout_constraintStart_toEndOf="@+id/tvDetailCount"
+                app:layout_constraintTop_toTopOf="@+id/imgGreat"
+                app:srcCompat="@drawable/icon_reply" />
+
             <TextView
                 android:id="@+id/tvDetailCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="개수"
-                android:textSize="14sp"
+                android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="@+id/imgGreat"
                 app:layout_constraintStart_toEndOf="@+id/imgGreat"
                 app:layout_constraintTop_toTopOf="@+id/imgGreat" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="댓글 쓰기"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/imgbtnReply"
+                app:layout_constraintStart_toEndOf="@+id/imgbtnReply"
+                app:layout_constraintTop_toTopOf="@+id/imgbtnReply" />
 
             <TextView
                 android:id="@+id/tvDetailContent"
@@ -167,11 +191,13 @@
     </ScrollView>
 
     <LinearLayout
-        android:id="@+id/linearLayout8"
+        android:id="@+id/LinearReply"
         android:layout_width="0dp"
         android:layout_height="60dp"
+        android:background="@drawable/shape_tetragon8"
         android:gravity="center"
         android:orientation="horizontal"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -181,6 +207,7 @@
             android:id="@+id/etReply"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:layout_marginLeft="5dp"
             android:layout_weight="1"
             android:background="@drawable/shape_tetragon9"
             android:ems="10"
@@ -194,7 +221,7 @@
 
         <ImageButton
             android:id="@+id/imgReplyCheck"
-            android:layout_width="60dp"
+            android:layout_width="50dp"
             android:layout_height="match_parent"
             android:background="#00FFFFFF"
             android:contentDescription="null"

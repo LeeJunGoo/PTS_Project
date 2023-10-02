@@ -48,7 +48,7 @@ public class FragmentProudCommunity extends Fragment {
         loadBoardData();
 
         //2. 게시판의 "더보기" 이벤트 핸들러 설정
-        adapter.setOnItemClickListener(new OnPersonItemClickListener() {
+        adapter.setOnItemClickListener(new OnBoardClickListener() {
             @Override
             public void onItemClick(BoardAdapter.BoardViewHolder viewHolder, View view, int position) {
                 Intent intent = new Intent(getContext(), CommunityDetailPage.class);

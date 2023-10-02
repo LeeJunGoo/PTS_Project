@@ -18,7 +18,7 @@ public class UserTotalLoginActivity extends AppCompatActivity {
 
 
 
-    Button btntotalSkip, btnGoogle;
+    Button btntotalSkip;
     TextView tvLogin, tvRegister;
 
 

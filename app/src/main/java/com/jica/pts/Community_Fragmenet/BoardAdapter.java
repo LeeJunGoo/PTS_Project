@@ -22,13 +22,13 @@ import java.util.Date;
 
 //변경된 부분3
 //RecyclerView의 어댑터는 반드시 RecyclerView.Adapter 클래스를 상속받아야 한다.
-public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHolder> implements OnPersonItemClickListener {
+public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHolder> implements OnBoardClickListener {
     ArrayList<Board> arrayList;
     Context context;
 
     //변경된 부분5
     //클릭 이벤트 처리를 위한 listener
-    OnPersonItemClickListener listener;
+    OnBoardClickListener listener;
 
 
     public BoardAdapter(ArrayList<Board> arrayList, Context context) {
@@ -165,7 +165,7 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
     }
 
     //변경된 부분6
-    public void setOnItemClickListener(OnPersonItemClickListener listener) {
+    public void setOnItemClickListener(OnBoardClickListener listener) {
         this.listener = listener;
 
     }
@@ -181,7 +181,7 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
         //변경된 부분 1
         //UI 객체 찾기
         //final OnPersonItemClickListener listener==> final(상수) 선언으로 인해 내부에서 변경 불가
-        public BoardViewHolder(@NonNull View itemView, final OnPersonItemClickListener listener) {
+        public BoardViewHolder(@NonNull View itemView, final OnBoardClickListener listener) {
             super(itemView);
             tvId = itemView.findViewById(R.id.tvId);
             tvTitle = itemView.findViewById(R.id.tvTitle);

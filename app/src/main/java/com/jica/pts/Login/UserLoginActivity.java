@@ -16,8 +16,10 @@ import com.jica.pts.MainFragment.BottomTabActivity;
 import com.jica.pts.R;
 
 public class UserLoginActivity extends AppCompatActivity {
+    //DB 객체 찾기
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
+    //UI 객체 찾기
     private EditText etEmail;
     private EditText etPassword;
     private Button btnLogin, btnSkip;
@@ -27,14 +29,15 @@ public class UserLoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_login);
 
+        //DB 객체 연결
         firebaseAuth = FirebaseAuth.getInstance();
 
+        //UI 객체 선언
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
         btnSkip = findViewById(R.id.btnSkip);
 
-        //이벤트 핸들러 설정
 
         //1. Skip 버튼 이벤트 핸들러
         btnSkip.setOnClickListener(new View.OnClickListener() {

@@ -16,11 +16,11 @@ import com.jica.pts.R;
 
 import java.util.ArrayList;
 
-public class MainBoardAdapter extends RecyclerView.Adapter<MainBoardAdapter.MainBoardViewHolder> implements OnPersonItemClickListeners {
+public class MainBoardAdapter extends RecyclerView.Adapter<MainBoardAdapter.MainBoardViewHolder> implements OnMainBoardClickListeners {
     ArrayList<Board> NewArrayList;
     ArrayList<Board> HotArrayList;
     Context context;
-    OnPersonItemClickListeners listener;
+    OnMainBoardClickListeners listener;
 
 
     public MainBoardAdapter(ArrayList<Board> NewArrayList, Context context) {
@@ -86,7 +86,7 @@ public class MainBoardAdapter extends RecyclerView.Adapter<MainBoardAdapter.Main
     }
 
     //변경된 부분6
-    public void setOnItemClickListener(OnPersonItemClickListeners listener) {
+    public void setOnItemClickListener(OnMainBoardClickListeners listener) {
         this.listener = listener;
 
     }
@@ -100,7 +100,7 @@ public class MainBoardAdapter extends RecyclerView.Adapter<MainBoardAdapter.Main
         //변경된 부분 1
         //UI 객체 찾기
         //final OnPersonItemClickListener listener==> final(상수) 선언으로 인해 내부에서 변경 불가
-        public MainBoardViewHolder(@NonNull View itemView, final OnPersonItemClickListeners listener) {
+        public MainBoardViewHolder(@NonNull View itemView, final OnMainBoardClickListeners listener) {
             super(itemView);
             tvTitle = itemView.findViewById(R.id.tvCmName);
             imgPhoto1 = itemView.findViewById(R.id.imgPhoto);

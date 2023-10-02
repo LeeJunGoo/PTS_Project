@@ -54,8 +54,9 @@ public class CommunityDetailPage extends AppCompatActivity {
     //UI 객체 선언
     TextView tvDetailTitle, tvDetailId, tvDetailTime, tvDetailContent, tvDetailCount;
     EditText etReply;
-    ImageButton imgGreat, imgReplyCheck;
+    ImageButton imgGreat, imgReplyCheck, imgbtnReply;
     Button btnDelect;
+    LinearLayout LinearReply;
 
 
     //DB 객체 선언
@@ -92,6 +93,8 @@ public class CommunityDetailPage extends AppCompatActivity {
         imgGreat = findViewById(R.id.imgGreat);
         btnDelect = findViewById(R.id.btnDelect);
         imgReplyCheck = findViewById(R.id.imgReplyCheck);
+        imgbtnReply= findViewById(R.id.imgbtnReply);
+        LinearReply= findViewById(R.id.LinearReply);
 
 
         //댓글 객체 찾기 2)
@@ -120,10 +123,10 @@ public class CommunityDetailPage extends AppCompatActivity {
             }
         });
 
-        //이미지 초기 설정
+     /*   //이미지 초기 설정
         if(photoUris != null){
 
-        }
+        }*/
 
         //DB 연결
         db = FirebaseFirestore.getInstance();
@@ -185,7 +188,7 @@ public class CommunityDetailPage extends AppCompatActivity {
                     }
                 });
 
-        //고치는 부분
+
         LoadReply(Board_number);
 
 
@@ -198,6 +201,13 @@ public class CommunityDetailPage extends AppCompatActivity {
             checkUID(Board_number);
 
         }
+        //답글 버튼 이벤트 핸들러
+        replyAdapter.setOnItemClickListener(new OnReplyClickListener() {
+            @Override
+            public void onItemClick(ReplyAdapter.ReplyViewHolder viewHolder, View view, int position) {
+
+            }
+        });
 
 
         //삭제 버튼 이벤트 핸들러
@@ -247,6 +257,19 @@ public class CommunityDetailPage extends AppCompatActivity {
                 alertDialog.show(); //대화상자 보이기
 
 
+            }
+        });
+        imgbtnReply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(imgbtnReply.isSelected()){
+                    LinearReply.setVisibility(View.GONE);
+                }else {
+                    LinearReply.setVisibility(View.VISIBLE);
+                }
+                // isSelected() 메서드의 반환값은 true 또는 false 중 하나입니다.
+                // "!" 연산자를 사용하여 현재 선택 상태를 반전시킵니다. 즉, true는 false로, false는 true로 바뀝니다.
+                imgbtnReply.setSelected(!imgbtnReply.isSelected());
             }
         });
 
@@ -350,7 +373,7 @@ public class CommunityDetailPage extends AppCompatActivity {
     private void saveReplyDataWithNextDocumentId(int Board_number) {
         // 쿼리문 해석:
         // 1) 상위 컬랙션인 "Board"의 현재 Document에서
-        //    하위 컬랙션인 "Reply" 컬랙션의 문서 조회 및 생성  ==> 조회 및 생성 당시 값이 없으면 자동 생성된다.
+        //    하위 컬랙션인 "Reply" 컬랙션의 문서 조회 및 생성  ==> 조회 및 생성 초기값이 없으면 자동 생성된다.
         // 2) "reply_number"인 필드값을 기준으로 내림차순으로 정렬하고(Query.Direction.DESCENDING), ==> 문서 값 변화: 1 -> 2 -> 3 -> 4
         //    가장 최근(최신) 문서 1개를 가져와서(limit(1)) 문서 값을 계속 증가 시킨다.
         db.collection("Board").document(String.valueOf(Board_number)).collection("Reply")
@@ -386,8 +409,7 @@ public class CommunityDetailPage extends AppCompatActivity {
 
                     }
 
-                })
-                .addOnFailureListener(new OnFailureListener() {
+                }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
 
@@ -397,8 +419,6 @@ public class CommunityDetailPage extends AppCompatActivity {
                 });
 
     }
-
-
     private void saveBoardData(long Board_number, long nextDocumentId) {
         //Reply 객체 생성
         Reply reply = new Reply();
