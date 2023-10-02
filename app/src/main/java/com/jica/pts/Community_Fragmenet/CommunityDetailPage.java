@@ -216,7 +216,7 @@ public class CommunityDetailPage extends AppCompatActivity {
             public void onClick(View view) {
                 Timestamp date = Timestamp.now();
 
-                //삭제 데이터123123
+                //삭제 데이터
                 Map<String, Object> delect = new HashMap<>();
                 delect.put("board_del", true);
                 delect.put("board_del_date", date);
