@@ -59,12 +59,6 @@ public class CommunityDetailPage extends AppCompatActivity {
     LinearLayout LinearReply;
 
 
-    //DB 객체 선언
-    FirebaseFirestore db;
-    FirebaseAuth firebaseAuth;
-    FirebaseUser CurrentUser;
-
-
     //이미지 객체 선언 1)
     private ViewPager2 sliderViewPager;
     private LinearLayout layoutIndicator;
@@ -72,10 +66,19 @@ public class CommunityDetailPage extends AppCompatActivity {
     private ArrayList<String> photoUris = new ArrayList<>();
 
 
+
     //댓글 객체 선언1)
     private RecyclerView rcReply;
     private ReplyAdapter replyAdapter;
     private ArrayList<Reply> replyArrayList;
+
+
+    //DB 객체 선언
+    FirebaseFirestore db;
+    FirebaseAuth firebaseAuth;
+    FirebaseUser CurrentUser;
+
+
 
 
     @Override
@@ -97,7 +100,7 @@ public class CommunityDetailPage extends AppCompatActivity {
         LinearReply= findViewById(R.id.LinearReply);
 
 
-        //댓글 객체 찾기 2)
+        //댓글 객체 찾기
         rcReply = findViewById(R.id.rcReply);
         rcReply.setHasFixedSize(true);
         rcReply.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -106,13 +109,13 @@ public class CommunityDetailPage extends AppCompatActivity {
         rcReply.setAdapter(replyAdapter);
 
 
-        //이미지 객체 찾기 2)
+        //이미지 객체 찾기
         sliderViewPager = findViewById(R.id.sliderViewPager);
         layoutIndicator = findViewById(R.id.layoutIndicators);
         sliderViewPager.setOffscreenPageLimit(1);
 
 
-        //이미지 틀 생성 3)
+        //이미지 틀 생성
         adapter = new ImageSliderAdapter(this, photoUris);
         sliderViewPager.setAdapter(adapter);
         sliderViewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
@@ -122,11 +125,6 @@ public class CommunityDetailPage extends AppCompatActivity {
                 setCurrentIndicator(position);
             }
         });
-
-     /*   //이미지 초기 설정
-        if(photoUris != null){
-
-        }*/
 
         //DB 연결
         db = FirebaseFirestore.getInstance();
@@ -262,14 +260,42 @@ public class CommunityDetailPage extends AppCompatActivity {
         imgbtnReply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(imgbtnReply.isSelected()){
-                    LinearReply.setVisibility(View.GONE);
+                if(CurrentUser != null){
+                    if(imgbtnReply.isSelected()){
+                        LinearReply.setVisibility(View.GONE);
+                    }else {
+                        LinearReply.setVisibility(View.VISIBLE);
+                    }
+                    // isSelected() 메서드의 반환값은 true 또는 false 중 하나입니다.
+                    // "!" 연산자를 사용하여 현재 선택 상태를 반전시킵니다. 즉, true는 false로, false는 true로 바뀝니다.
+                    imgbtnReply.setSelected(!imgbtnReply.isSelected());
                 }else {
-                    LinearReply.setVisibility(View.VISIBLE);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(CommunityDetailPage.this);
+                    builder.setMessage("로그인 후 사용가능합니다.");
+                    //긍정적 성격의 버튼 이벤트 핸들러              ButtonPositive(-1)
+                    builder.setPositiveButton("로그인 하기", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            //DB 저장(!!) 및 엑티비티 이동
+                            //saveBoardDataWithNextDocumentId();
+                            Intent intent = new Intent(getApplicationContext(), UserTotalLoginActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }
+                    });
+                    //부정적 성격의 버튼                ButtonNegative(-2)
+                    builder.setNegativeButton("취소", null);
+
+                    // true일 경우  : 대화상자 버튼이 아닌 배경 및 back 버튼 눌렀을때도 종료하도록 하는 기능
+                    // false일 경우 : 대화상자의 버튼으로만 대화상자가 종료하도록 하는 기능
+                    builder.setCancelable(false);
+
+                    //대화상자 만들기
+                    //주의사항 : 대화상자가 보여진 이후의 코드가 실행된다.
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show(); //대화상자 보이기
                 }
-                // isSelected() 메서드의 반환값은 true 또는 false 중 하나입니다.
-                // "!" 연산자를 사용하여 현재 선택 상태를 반전시킵니다. 즉, true는 false로, false는 true로 바뀝니다.
-                imgbtnReply.setSelected(!imgbtnReply.isSelected());
+
             }
         });
 
@@ -281,6 +307,32 @@ public class CommunityDetailPage extends AppCompatActivity {
             public void onClick(View view) {
                 if (CurrentUser != null) {
                     saveReplyDataWithNextDocumentId(Board_number);
+                }else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(CommunityDetailPage.this);
+                    builder.setMessage("로그인 후 사용가능합니다.");
+                    //긍정적 성격의 버튼 이벤트 핸들러              ButtonPositive(-1)
+                    builder.setPositiveButton("로그인 하기", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            //DB 저장(!!) 및 엑티비티 이동
+                            //saveBoardDataWithNextDocumentId();
+                            Intent intent = new Intent(getApplicationContext(), UserTotalLoginActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }
+                    });
+                    //부정적 성격의 버튼                ButtonNegative(-2)
+                    builder.setNegativeButton("취소", null);
+
+                    // true일 경우  : 대화상자 버튼이 아닌 배경 및 back 버튼 눌렀을때도 종료하도록 하는 기능
+                    // false일 경우 : 대화상자의 버튼으로만 대화상자가 종료하도록 하는 기능
+                    builder.setCancelable(false);
+
+                    //대화상자 만들기
+                    //주의사항 : 대화상자가 보여진 이후의 코드가 실행된다.
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show(); //대화상자 보이기
+
                 }
             }
         });
@@ -318,7 +370,7 @@ public class CommunityDetailPage extends AppCompatActivity {
                     AlertDialog.Builder builder = new AlertDialog.Builder(CommunityDetailPage.this);
                     builder.setMessage("로그인 후 사용가능합니다.");
                     //긍정적 성격의 버튼 이벤트 핸들러              ButtonPositive(-1)
-                    builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
+                    builder.setPositiveButton("로그인 하기", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             //DB 저장(!!) 및 엑티비티 이동
@@ -329,7 +381,7 @@ public class CommunityDetailPage extends AppCompatActivity {
                         }
                     });
                     //부정적 성격의 버튼                ButtonNegative(-2)
-                    builder.setNegativeButton("아니오", null);
+                    builder.setNegativeButton("취소", null);
 
                     // true일 경우  : 대화상자 버튼이 아닌 배경 및 back 버튼 눌렀을때도 종료하도록 하는 기능
                     // false일 경우 : 대화상자의 버튼으로만 대화상자가 종료하도록 하는 기능
