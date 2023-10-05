@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.icu.text.SimpleDateFormat;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +51,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CommunityDetailPage extends AppCompatActivity {
+    private boolean isProcessingClick = false;
+
 
     //UI 객체 선언
     TextView tvDetailTitle, tvDetailId, tvDetailTime, tvDetailContent, tvDetailCount;
@@ -134,71 +137,29 @@ public class CommunityDetailPage extends AppCompatActivity {
         //FragmentPlayGroundCommunity에서 저장(putExtra)한 문서(document)번호를 intent 객체로 불러오기
         Intent BoardIntent = getIntent();
         int Board_number = Integer.valueOf(BoardIntent.getStringExtra("Board_number"));
-        Toast.makeText(this, Board_number +"", Toast.LENGTH_SHORT).show();
 
 
-
-        // Firebase Storage에서 파일 목록을 불러오는 메서드 호출 4)
+        //Firebase Storage에서 파일 목록 불러오기
         loadPhotosFromFirebaseStorage(Board_number);
 
 
-        // 순서 1) DB에 저장된 값들 UI 객체에 읽어오기
-        //쿼리문 해석: 컬랙션("Board")의 필드(board_number)에 값이 x인 문서(document)를 불러온다.
-        db.collection("Board").whereEqualTo("board_number", Board_number)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        // FireStore에 저장된 데이터(문서(document))를 리스트에 저장
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            // Board 객체에서 저장
-                            Board board = document.toObject(Board.class);
+        //DB에 저장된 Board 객체 읽어오기
+        readDataFromFirestore(Board_number);
 
-                            //위의 board에서 가공한 데이터들의 값을 현재의 UI 객체에 읽어온다.
-                            tvDetailTitle.setText(board.getBoard_title());
-                            tvDetailContent.setText(board.getBoard_content());
-                            tvDetailId.setText(board.getUser_id());
-
-                            //주의 사항) 숫자 데이터를 불러올 때 에러가 발생하면 String형으로 형 변환 시키기
-                            tvDetailCount.setText(String.valueOf(board.getBoard_great()));
-
-                            // board에서 가공하여 Timestamp형으로 저장된 board_date(시간)를
-                            // 현재의 UI객체에 저장하기 위해서 string형으로 형 변환
-                            Timestamp timestamp = board.getBoard_date();
-                            //Date 객체로 형변환 이유==> FireStore.txt에 설명
-                            Date date = timestamp.toDate();
-                            //SimpleDateFormat 기능==> FireStore.txt에 설명
-                            SimpleDateFormat dateFormat = new SimpleDateFormat("yy.MM.dd");
-                            String board_date = dateFormat.format(date);
-                            tvDetailTime.setText(board_date);
-
-                            // 현재 접속 ID 및 글 작성 ID 확인 여부 후 삭제 버튼 Visible 및 gone 형태 유지
-                            // 현재 위치에 선언한 이유: db 선언 당시에만 tvDetailId값을 읽어올 수 있기 때문이다. 만약
-                            // 현재위치가 아닌 OnCreate 다른 부분에서 찾을 경우 tvDeatilId.getText() 및 데이터인 board.getBoard_Delect하면 null 값 및 기존 xml에 지정한 임시 text가 불러와진다.
-                            // Log.d("Delect", CurrentUser.getEmail() + "," + tvDetailId); 확인해보기
-                            if (CurrentUser != null) {
-                                if (CurrentUser.getEmail().equals(tvDetailId.getText())) {
-                                    btnDelect.setVisibility(View.VISIBLE);
-                                }
-                            }
-                        }
-                    } else {
-                        Log.e("TAG", "Document 가공 과정에서 Error 발생", task.getException());
-                    }
-                });
-
-
+        //DB에 저장된 Reply 객체 읽어오기
         LoadReply(Board_number);
 
 
-        //순서 2) 로그인 유효성 검사 1
+        //로그인 유효성 검사 1
         // if(CurrentUser != null)  ==> CurrentUser.getUid()를 가져올 때 로그인 되지 않은 상태에서 불러오면 오류가 발생하므로 로그인 여부 확인 후 가져오기
         // checkLike(Board_number); ==>  하위 컬랙션 데이터 생성
         // checkUID(Board_number);  ==>  좋아요 초기 설정
         if (CurrentUser != null) {
             checkLike(Board_number);
             checkUID(Board_number);
-
         }
+
+
         //답글 버튼 이벤트 핸들러
         replyAdapter.setOnItemClickListener(new OnReplyClickListener() {
             @Override
@@ -212,193 +173,216 @@ public class CommunityDetailPage extends AppCompatActivity {
         btnDelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Timestamp date = Timestamp.now();
-
-                //삭제 데이터
-                Map<String, Object> delect = new HashMap<>();
-                delect.put("board_del", true);
-                delect.put("board_del_date", date);
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(CommunityDetailPage.this);
-                builder.setMessage("정말로 삭제하시겠습니까?");
-                //긍정적 성격의 버튼 이벤트 핸들러              ButtonPositive(-1)
-                builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                        db.collection("Board").document(String.valueOf(Board_number)).update(delect)
-                                .addOnCompleteListener(task -> {
-                                    if (task.isSuccessful()) {
-
-                                    }
-                                });
-                        Intent intent = new Intent(getApplicationContext(), BottomTabActivity.class);
-                        intent.putExtra("move", "DetailPage");
-                        startActivity(intent);
-                        //엑티비티에서 프래그먼트 이동 공식
-                        //무슨 이유인지 모르겠는데 오류 발생;....
-                        /*FragmentCommunity fragmentCommunity = new FragmentCommunity();
-                        getSupportFragmentManager().beginTransaction().replace(R.id.container1, fragmentCommunity).commit();*/
-
-
-                    }
-                });
-                //부정적 성격의 버튼                ButtonNegative(-2)
-                builder.setNegativeButton("아니오", null);
-                // true일 경우  : 대화상자 버튼이 아닌 배경 및 back 버튼 눌렀을때도 종료하도록 하는 기능
-                // false일 경우 : 대화상자의 버튼으로만 대화상자가 종료하도록 하는 기능
-                builder.setCancelable(false);
-
-                //대화상자 만들기
-                //주의사항 : 대화상자가 보여진 이후의 코드가 실행된다.
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show(); //대화상자 보이기
-
-
+                handleDeleteButtonClick(Board_number);
             }
         });
+
+
+
+        //댓글쓰기 버튼 이벤트 핸들러
         imgbtnReply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(CurrentUser != null){
-                    if(imgbtnReply.isSelected()){
-                        LinearReply.setVisibility(View.GONE);
-                    }else {
-                        LinearReply.setVisibility(View.VISIBLE);
-                    }
-                    // isSelected() 메서드의 반환값은 true 또는 false 중 하나입니다.
-                    // "!" 연산자를 사용하여 현재 선택 상태를 반전시킵니다. 즉, true는 false로, false는 true로 바뀝니다.
-                    imgbtnReply.setSelected(!imgbtnReply.isSelected());
-                }else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(CommunityDetailPage.this);
-                    builder.setMessage("로그인 후 사용가능합니다.");
-                    //긍정적 성격의 버튼 이벤트 핸들러              ButtonPositive(-1)
-                    builder.setPositiveButton("로그인 하기", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            //DB 저장(!!) 및 엑티비티 이동
-                            //saveBoardDataWithNextDocumentId();
-                            Intent intent = new Intent(getApplicationContext(), UserTotalLoginActivity.class);
-                            startActivity(intent);
-                            finish();
-                        }
-                    });
-                    //부정적 성격의 버튼                ButtonNegative(-2)
-                    builder.setNegativeButton("취소", null);
-
-                    // true일 경우  : 대화상자 버튼이 아닌 배경 및 back 버튼 눌렀을때도 종료하도록 하는 기능
-                    // false일 경우 : 대화상자의 버튼으로만 대화상자가 종료하도록 하는 기능
-                    builder.setCancelable(false);
-
-                    //대화상자 만들기
-                    //주의사항 : 대화상자가 보여진 이후의 코드가 실행된다.
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show(); //대화상자 보이기
-                }
-
+                handleReplyButtonClick();
             }
         });
 
 
-        // 댓글 버튼 이벤트 핸들러
-        imgReplyCheck.setOnClickListener(new View.OnClickListener() {
 
+        // 댓글 입력 EditText 버튼 이벤트 핸들러
+        imgReplyCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (CurrentUser != null) {
                     saveReplyDataWithNextDocumentId(Board_number);
-                }else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(CommunityDetailPage.this);
-                    builder.setMessage("로그인 후 사용가능합니다.");
-                    //긍정적 성격의 버튼 이벤트 핸들러              ButtonPositive(-1)
-                    builder.setPositiveButton("로그인 하기", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            //DB 저장(!!) 및 엑티비티 이동
-                            //saveBoardDataWithNextDocumentId();
-                            Intent intent = new Intent(getApplicationContext(), UserTotalLoginActivity.class);
-                            startActivity(intent);
-                            finish();
-                        }
-                    });
-                    //부정적 성격의 버튼                ButtonNegative(-2)
-                    builder.setNegativeButton("취소", null);
-
-                    // true일 경우  : 대화상자 버튼이 아닌 배경 및 back 버튼 눌렀을때도 종료하도록 하는 기능
-                    // false일 경우 : 대화상자의 버튼으로만 대화상자가 종료하도록 하는 기능
-                    builder.setCancelable(false);
-
-                    //대화상자 만들기
-                    //주의사항 : 대화상자가 보여진 이후의 코드가 실행된다.
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show(); //대화상자 보이기
-
                 }
             }
         });
 
 
-        //순서 3) 좋아요 버튼 이벤트 핸들러
+
+        //좋아요 버튼 이벤트 핸들러
         imgGreat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // 로그인 유효성 검사 2
-                // 로그인 유효성 검사를 1,2로 나눈 이유는 "좋아요" 이미지 클릭 시 팝업창("로그인하기")을 띄우기 위해 유효성 검사를 나누었다.
-                // 만약 위에서(유혀성 검사1) "로그인하기" 팝업창 기능을 띄우면 현재 페이지를 들어올 때 팝업창이 등장하므로 부자연스럽다.
-                if (CurrentUser != null) {
-
-                    //순서 5) 좋아요 해제
-                    if (imgGreat.isSelected()) {
-                        imgGreat.setImageResource(R.drawable.icon_like_normal);
-                        //좋아요 감소:   문서 번호    , 현재 좋아요 개수
-                        setGreatdown(Board_number, Integer.valueOf(tvDetailCount.getText().toString()));
-
-                    } else {
-                        //순서 5) 좋아요 선택
-                        imgGreat.setImageResource(R.drawable.icon_like);
-                        //좋아요 증가:  문서 번호    ,  현재 좋아요 개수
-                        setGreatUp(Board_number, Integer.valueOf(tvDetailCount.getText().toString()));
-
-                    }
-                    // isSelected() 메서드의 반환값은 true 또는 false 중 하나입니다.
-                    // "!" 연산자를 사용하여 현재 선택 상태를 반전시킵니다. 즉, true는 false로, false는 true로 바뀝니다.
-                    imgGreat.setSelected(!imgGreat.isSelected());
-
-
-                } else {
-                    //순서 4)
-                    AlertDialog.Builder builder = new AlertDialog.Builder(CommunityDetailPage.this);
-                    builder.setMessage("로그인 후 사용가능합니다.");
-                    //긍정적 성격의 버튼 이벤트 핸들러              ButtonPositive(-1)
-                    builder.setPositiveButton("로그인 하기", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            //DB 저장(!!) 및 엑티비티 이동
-                            //saveBoardDataWithNextDocumentId();
-                            Intent intent = new Intent(getApplicationContext(), UserTotalLoginActivity.class);
-                            startActivity(intent);
-                            finish();
-                        }
-                    });
-                    //부정적 성격의 버튼                ButtonNegative(-2)
-                    builder.setNegativeButton("취소", null);
-
-                    // true일 경우  : 대화상자 버튼이 아닌 배경 및 back 버튼 눌렀을때도 종료하도록 하는 기능
-                    // false일 경우 : 대화상자의 버튼으로만 대화상자가 종료하도록 하는 기능
-                    builder.setCancelable(false);
-
-                    //대화상자 만들기
-                    //주의사항 : 대화상자가 보여진 이후의 코드가 실행된다.
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show(); //대화상자 보이기
-                }
-
-
+                handleLikeButtonClick(Board_number);
             }
         });
 
 
     }
+
+
+
+
+
+
+
+    private void handleLikeButtonClick(int Board_number) {
+        // 로그인 유효성 검사 2
+        //"좋아요" 이미지 클릭 시 팝업창("로그인하기")을 띄우기
+        // 만약 위(로그인 유혀성 검사1)에서 "로그인하기" 팝업창 띄우면 현재 페이지를 들어올 때마다 "로그인하기" 팝업창이 등장하므로 부자연스럽다.
+        if (CurrentUser != null) {
+            //좋아요 버튼 유효성 검사
+            // !isProcessingClick을 통해 postDelayed의 정상작동을 확인 후 좋아요 기능 수행
+            if(!isProcessingClick){
+                isProcessingClick = true;
+                imgGreat.setEnabled(false);   //버튼 클릭 후 비활성화
+                if (imgGreat.isSelected()) {
+                    imgGreat.setImageResource(R.drawable.icon_like_normal);
+                    setGreatdown(Board_number, Integer.valueOf(tvDetailCount.getText().toString()));
+                } else {
+                    imgGreat.setImageResource(R.drawable.icon_like);
+                    setGreatUp(Board_number, Integer.valueOf(tvDetailCount.getText().toString()));
+                }
+
+                //버튼 클릭의 지연 핸들러
+                imgGreat.postDelayed(new Runnable() {
+                    @Override
+                    //지연 시킨 이후 실행 할 명령문
+                    public void run() {
+                        isProcessingClick = false;
+                        imgGreat.setEnabled(true);  //버튼 활성화
+                        imgGreat.setSelected(!imgGreat.isSelected());    // 현재 선택 상태를 반전시킵니다. 즉, true는 false로, false는 true로 바뀝니다.
+
+                    }
+                }, 500);
+
+            }
+
+        } else {
+                LoginDialog();
+        }
+
+
+    }
+
+    private void handleReplyButtonClick() {
+        if (CurrentUser != null) {
+            if (imgbtnReply.isSelected()) {
+                LinearReply.setVisibility(View.GONE);
+            } else {
+                LinearReply.setVisibility(View.VISIBLE);
+            }
+            imgbtnReply.setSelected(!imgbtnReply.isSelected());
+        } else {
+            LoginDialog();
+        }
+
+    }
+
+    private void LoginDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(CommunityDetailPage.this);
+        builder.setMessage("로그인 후 사용가능합니다.");
+        builder.setPositiveButton("로그인 하기", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Intent intent = new Intent(getApplicationContext(), UserTotalLoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+        builder.setNegativeButton("취소", null);
+        builder.setCancelable(false);
+        // true일 경우  : 대화상자 버튼이 아닌 배경 및 back 버튼 눌렀을때도 종료하도록 하는 기능
+        // false일 경우 : 대화상자의 버튼으로만 대화상자가 종료하도록 하는 기능
+
+        //대화상자 생성
+        //주의사항 : 대화상자가 생성된 이후에 코드가 실행된다.
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+    }
+
+
+
+    private void handleDeleteButtonClick(int Board_number) {
+        Timestamp date = Timestamp.now();
+        Map<String, Object> delect = new HashMap<>();
+        delect.put("board_del", true);
+        delect.put("board_del_date", date);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(CommunityDetailPage.this);
+        builder.setMessage("정말로 삭제하시겠습니까?");
+        builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                db.collection("Board").document(String.valueOf(Board_number)).update(delect)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    // Handle success
+                                }
+                            }
+                        });
+                 /*엑티비티에서 프래그먼트 이동 공식
+                FragmentCommunity fragmentCommunity = new FragmentCommunity();
+                getSupportFragmentManager().beginTransaction().replace(R.id.container1, fragmentCommunity).commit(); 이지만 error 발생...
+                시간 관계상 프로젝트 완성을 위해 아래의 방법으로 실행하였다.
+                */
+                Intent intent = new Intent(getApplicationContext(), BottomTabActivity.class);
+                intent.putExtra("move", "DetailPage");
+                startActivity(intent);
+
+            }
+        });
+
+        builder.setNegativeButton("아니오", null);
+        builder.setCancelable(false);
+        // true일 경우  : 대화상자 버튼이 아닌 배경 및 back 버튼 눌렀을때도 종료하도록 하는 기능
+        // false일 경우 : 대화상자의 버튼으로만 대화상자가 종료하도록 하는 기능
+
+        //대화상자 생성
+        //주의사항 : 대화상자가 생성된 이후에 코드가 실행된다.
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+
+    //쿼리문 해석: 컬랙션("Board")의 필드(board_number)에 값이 x인 문서(document)를 불러온다.
+    private void readDataFromFirestore(int Board_number) {
+        db.collection("Board").whereEqualTo("board_number", Board_number)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                // Board 객체에서 저장
+                                Board board = document.toObject(Board.class);
+                                updateUIWithBoardData(board);
+                            }
+                        } else {
+                            Log.d("TAG", "CommunityDetailPage의  readDataFromFirestore에서 오류 발생", task.getException());
+                        }
+                    }
+                });
+    }
+
+    //위의 readDataFromFirestore에서 가공한 데이터들을 현재의 UI 객체에 저장한다.
+    //주의 사항) DB에서 숫자 데이터를 불러올 때 에러가 발생하면 String형으로 형 변환 시키기
+    private void updateUIWithBoardData(Board board) {
+        tvDetailTitle.setText(board.getBoard_title());
+        tvDetailContent.setText(board.getBoard_content());
+        tvDetailId.setText(board.getUser_id());
+        tvDetailCount.setText(String.valueOf(board.getBoard_great()));
+
+        Timestamp timestamp = board.getBoard_date();
+        //Date 객체로 형변환 이유==> FireStore.txt에 설명
+        Date date = timestamp.toDate();
+        //SimpleDateFormat 기능==> FireStore.txt에 설명
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yy.MM.dd");
+        String board_date = dateFormat.format(date);
+        tvDetailTime.setText(board_date);
+
+        // 현재 접속ID와 글 작성ID 일치 여부 후 삭제 버튼 Visible 및 gone 형태 유지
+        if (CurrentUser != null && CurrentUser.getEmail().equals(tvDetailId.getText())) {
+            btnDelect.setVisibility(View.VISIBLE);
+        }
+    }
+
+
 
     private void LoadReply(int BoardNumber) {
         db.collection("Board").document(String.valueOf(BoardNumber))
@@ -415,7 +399,7 @@ public class CommunityDetailPage extends AppCompatActivity {
 
 
                     } else {
-                        Log.d("Reply", "Error 댓글 이벤트 핸들러 에러", task.getException());
+                        Log.d("TAG", "CommunityDetailPage의 LoadReply에서 오류 발생", task.getException());
                     }
                 });
 
@@ -445,40 +429,30 @@ public class CommunityDetailPage extends AppCompatActivity {
                             // 현재 문서(document) ID에 1을 더하여 다음 문서(document)의 ID를 설정
                             long nextDocumentId = currentDocumentId + 1;
 
-
                             // DB(firestore)에 저장
-                            saveBoardData(Board_number, nextDocumentId);
-                            Log.d("Reply", String.valueOf(nextDocumentId));
-
+                            saveReplyData(Board_number, nextDocumentId);
 
                         } else {
                             //Board 컬렉션에 문서(document)가 없는 경우, 문서 id 초기값을 1로 설정합니다.
-                            saveBoardData(Board_number, 1);
-                            Log.d("Reply", String.valueOf(1));
-
-
+                            saveReplyData(Board_number, 1);
                         }
-
                     }
 
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-
-                        Log.d("ReplyWriteDB", "Query 설정하는 중에 오류가 발생했습니다.");
-
+                        Log.d("TAG", "CommunityDetailPage의 saveReplyDataWithNextDocumentId 쿼리문에서 error 발생", e);
                     }
                 });
 
     }
-    private void saveBoardData(long Board_number, long nextDocumentId) {
-        //Reply 객체 생성
+
+
+    private void saveReplyData(long Board_number, long nextDocumentId) {
         Reply reply = new Reply();
-        //날짜 객체 생성
         Timestamp date = Timestamp.now();
 
-        // Board 객체에 데이터 저장
-        // Bean에 있는 Board 객체에 선언하지 않을 경우 기본값으로 String null, int는 0으로 db에 저장된다, boolean 초기값은 false이다.
+        // Bean 객체에 선언하지 않을 경우 기본값으로 String null, int는 0으로 db에 저장된다, boolean 초기값은 false이다.
         reply.setUser_id(CurrentUser.getEmail());
         if (etReply.getText().toString().isEmpty()) {
             Toast.makeText(this, "댓글내용을 입력해주세요", Toast.LENGTH_SHORT).show();
@@ -490,9 +464,9 @@ public class CommunityDetailPage extends AppCompatActivity {
         reply.setReply_check_revel(String.valueOf(nextDocumentId));
 
 
-        //해석: 상위컬랙션인 Board 컬랙션의 문서 번호가 Board_number인 곳의 하위컬랙션인 Reply에 데이터 저장
-        db.collection("Board").document(String.valueOf(Board_number)).collection("Reply").document(String.valueOf(nextDocumentId))//사용자가 정의한 문서(document) 이름(식별자)
-                .set(reply)                 //board 객체에 저장한 데이터를 db(fireStore) 저장
+        //쿼리문 해석: 상위컬랙션인 Board 컬랙션의 문서 번호가 Board_number인 곳의 하위컬랙션인 Reply에 데이터 저장
+        db.collection("Board").document(String.valueOf(Board_number)).collection("Reply").document(String.valueOf(nextDocumentId))
+                .set(reply)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -503,7 +477,7 @@ public class CommunityDetailPage extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d("ReplyWriteDB", "저장을 실패했습니다.");
+                        Log.d("TAG", "CommunityDetailPage의 saveReplyData 쿼리문에서 error 발생", e);
 
                     }
                 });
@@ -539,7 +513,7 @@ public class CommunityDetailPage extends AppCompatActivity {
                         });
                     }
                 } else {
-                    // 파일 목록을 가져오는 데 실패한 경우 처리
+                   Log.d("TAG", "CommunityDetailPage의 loadPhotosFromFirebaseStorage 쿼리문에서 error 발생", task.getException());
                 }
             }
         });
@@ -585,7 +559,6 @@ public class CommunityDetailPage extends AppCompatActivity {
     }
 
 
-    // 순서 2)
     private void checkLike(int board_number) {
         //하위 컬랙션(Like)에 저장할 데이터 선언
         Map<String, Object> like = new HashMap<>();
@@ -598,7 +571,7 @@ public class CommunityDetailPage extends AppCompatActivity {
                     //데이터 조회를 성공 시 수행
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
-                        // 특정 문서가 Firestore에 존재하는 지 여부
+                        // 특정 문서가 Firestore에 존재하는지 여부
                         if (!document.exists()) {
                             db.collection("Board")
                                     .document(String.valueOf(board_number))
@@ -606,68 +579,73 @@ public class CommunityDetailPage extends AppCompatActivity {
                                     .document(CurrentUser.getUid())
                                     .set(like);
                         }
+                    }else {
+                        Log.d("TAG","CommunityDetailPage의 checkLike 쿼리문에서 오류 발생", task.getException());
                     }
                 });
     }
 
 
-    //순서 2)
-    //"좋아요 버튼" 초기 설정 ==> 중복 체크 제한을 위한 유효성 검사
+    //"좋아요 버튼" 초기 설정 ==>  중복 체크 제한을 위한 유효성 검사
     // true= 좋아요 누른 상태
     // false= 좋아요 누르지 않은 상태
     private void checkUID(int board_number) {
-        // db.collection("Board").document().collection("Like").whereEqualTo(CurrentUser.getUid(), true).get()  ==> // 특정 값 없이 document()부분을 설정하지 않으면 뒤의 쿼리문에서 인식을 못하여 에러가 발생한다.
+        // db.collection("Board").document().collection("Like").whereEqualTo(CurrentUser.getUid(), true).get()  ==> // document()부분을 설정하지 않으면 뒤(하위 컬랙션)의 쿼리문에서 error가 발생한다.
         db.collection("Board").document(String.valueOf(board_number)).collection("Like").whereEqualTo(CurrentUser.getUid(), true).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         QuerySnapshot querySnapshot = task.getResult();
-
-                        //쿼리 결과가 비어 있는 경우
+                           //쿼리 결과가 존재하지 않을 경우
                         if (querySnapshot.isEmpty()) {
-                            Toast.makeText(getApplicationContext(), "좋아요 누르지 않은 상태", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getApplicationContext(), "좋아요 누르지 않은 상태", Toast.LENGTH_SHORT).show();
                             imgGreat.setSelected(false); // 좋아요 버튼 해제
                             imgGreat.setImageResource(R.drawable.icon_like_normal); // 좋아요 버튼 이미지 변경
                         } else {
                             //쿼리 결과가 존재하는 경우
-                            Toast.makeText(getApplicationContext(), "좋아요 누른 상태", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getApplicationContext(), "좋아요 누른 상태", Toast.LENGTH_SHORT).show();
                             imgGreat.setSelected(true); // 좋아요 버튼 선택
                             imgGreat.setImageResource(R.drawable.icon_like); // 좋아요 버튼 이미지 변경
                         }
                     } else {
-                        // 쿼리 실패 시
-                        Toast.makeText(getApplicationContext(), "checkUID 에러 발생", Toast.LENGTH_SHORT).show();
+                       Log.d("TAG", "CommunityDetailPage의 checkUID 쿼리문에서 오류 발생", task.getException());
                     }
                 });
     }
 
 
-    //순서 6)
-    //좋아요 증가 메서드          문서 번호         현재 좋아요 개수
+    //좋아요 증가 메서드
+    //board_number: 문서 번호, board_count: 좋아요 개수
     private void setGreatUp(int board_number, int board_count) {
         db.collection("Board").document(String.valueOf(board_number))
                 .update("board_great", board_count + 1)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Toast.makeText(getApplicationContext(), "setGreatUp 실행", Toast.LENGTH_SHORT).show();
-                        //순서 7)
+                        //Toast.makeText(getApplicationContext(), "setGreatUp 실행", Toast.LENGTH_SHORT).show();
                         GreatUpCount(board_number);
-
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getApplicationContext(), "setGreatUp 에러 발생", Toast.LENGTH_SHORT).show();
+                        Log.d("TAG", "CommunuityDetailPage의 setGreatUp 쿼리문에서 error 발생", e);
                     }
                 });
 
-        db.collection("Board").document(String.valueOf(board_number)).collection("Like").document(CurrentUser.getUid()).update(CurrentUser.getUid(), true);
+        db.collection("Board").document(String.valueOf(board_number)).collection("Like").document(CurrentUser.getUid())
+                .update(CurrentUser.getUid(), true)
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+
+                    }else {
+                        Log.d("TAG", "CommunuityDetailPage의 setGreatUp update 쿼리문에서 error 발생", task.getException());
+                    }
+                });
+
     }
 
-
-    //순서 5)
-    //좋아요 감소 메서드             문서 번호         현재 좋아요 개수
+    //좋아요 감소 메서드
+    //board_number: 문서 번호, board_count: 좋아요 개수
     private void setGreatdown(int board_number, int board_count) {
         //Map<String, Object> updateData = new HashMap<>();
         //updateData.put("board_great", board_count - 1);
@@ -681,17 +659,13 @@ public class CommunityDetailPage extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        // 쓰기 성공
-                        Toast.makeText(getApplicationContext(), "setGreatDown 실행", Toast.LENGTH_SHORT).show();
-                        //순서 6)
+                        //Toast.makeText(getApplicationContext(), "setGreatDown 실행", Toast.LENGTH_SHORT).show();
                         GreatUpCount(board_number);
-
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        // 쓰기 실패
-                        Toast.makeText(getApplicationContext(), "setGreatDown 에러 발생", Toast.LENGTH_SHORT).show();
+                        Log.d("TAG", "CommunuityDetailPage의 setGreatDown 쿼리문에서 error 발생", e);
                     }
                 });
 
@@ -699,16 +673,14 @@ public class CommunityDetailPage extends AppCompatActivity {
                 .update(CurrentUser.getUid(), false)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-
+                        //Successful Query
                     } else {
-                        // 쿼리 실패 시
-                        Toast.makeText(getApplicationContext(), "setGreatdown 쿼리 실패", Toast.LENGTH_SHORT).show();
+                        Log.d("TAG", "CommunuityDetailPage의 setGreatDown update 쿼리문에서 error 발생", task.getException());
                     }
                 });
     }
 
 
-    //순서 6)
     //DB에 새로 저장한 좋아요 개수를 현재 UI화면에 적용하기(뿌려주기)
     private void GreatUpCount(int board_number) {
         db.collection("Board").document(String.valueOf(board_number)).get()
@@ -727,8 +699,7 @@ public class CommunityDetailPage extends AppCompatActivity {
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        // 쓰기 실패
-                        Toast.makeText(getApplicationContext(), "GreatUpCount 에러발생", Toast.LENGTH_SHORT).show();
+                        Log.d("TAG","CommunityDetailPage의 GreatUpCount 쿼리문에서 error 발생", e);
                     }
                 });
 

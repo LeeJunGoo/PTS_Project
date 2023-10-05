@@ -12,10 +12,11 @@ import com.jica.pts.MainFragment.BottomTabActivity;
 import com.jica.pts.R;
 
 public class UserRegisterCheckActivity extends AppCompatActivity {
+   
     private final long finishtimeed = 1000;
     private long presstime = 0;
-
-
+    
+    //UI 객체 선언
     Button btnstart;
 
 
@@ -24,8 +25,10 @@ public class UserRegisterCheckActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_register_check);
 
+        //UI 객체 찾기
         btnstart= findViewById(R.id.btnstart);
 
+        //시작하기 버튼 이벤트 핸들러
         btnstart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

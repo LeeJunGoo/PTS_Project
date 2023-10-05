@@ -32,7 +32,7 @@ public class BottomTabActivity extends AppCompatActivity {
         fragmentCommunity = new FragmentCommunity();
         fragmentProfile = new FragmentProfile();
 
-// 송신 액티비티에서 전달된 인텐트를 가져옵니다.
+// 송신 액티비티에서 전달된 intent를 가져옵니다.
         Intent intent = getIntent();
 // getStringExtra 메서드를 사용하여 정보를 추출합니다.
         String receivedData = intent.getStringExtra("move");
