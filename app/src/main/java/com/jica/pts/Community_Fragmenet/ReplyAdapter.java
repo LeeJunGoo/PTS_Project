@@ -109,7 +109,6 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
                         //listener는 현재의 Adpapter 객체를 의미한다.
                         //그러므로 아래의 코드는 현재 Adapter객체의 onItemClick()메서드를 호출한다.
                         //현재의 게시글 위치 전송
-
                         listener.onItemClick(ReplyViewHolder.this, view, position);
 
                     }

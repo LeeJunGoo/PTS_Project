@@ -162,7 +162,7 @@
         android:ems="10"
         android:gravity="center|start"
         android:hapticFeedbackEnabled="false"
-        android:hint="띄어쓰기 없는 영문, 숫자 6~20자"
+        android:hint="이메일 형식의 영문, 숫자 6~20자"
         android:inputType="text"
         android:paddingStart="25dp"
         android:selectAllOnFocus="false"

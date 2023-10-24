@@ -302,7 +302,6 @@ public class CommunityBoardWriteActivity extends AppCompatActivity {
         db.collection("Board").document(String.valueOf(nextDocumentId)).update(like)
                 .addOnCompleteListener(task -> {
                     if(task.isSuccessful()){
-                        Toast.makeText(getApplicationContext(),"성공",Toast.LENGTH_SHORT).show();
 
                         Log.d("i", "세번 째 I:"+i);
 
@@ -375,7 +374,7 @@ public class CommunityBoardWriteActivity extends AppCompatActivity {
         CollectionReference boardCollection = db.collection("Board");
 
         // 쿼리문 생성
-        // "Board" 컬렉션을 날짜 필드(boadr_date)를 기준으로 내림차순으로 정렬하고(Query.Direction.DESCENDING),
+        // "Board" 컬렉션을 날짜 필드(board_number)를 기준으로 내림차순으로 정렬하고(Query.Direction.DESCENDING),
         // 가장 최근(최신) 문서 1개를 가져와서(limit(1)) 확인한다. ==> [0] -> [1] -> [2] ->[3]
         boardCollection.orderBy("board_number", Query.Direction.DESCENDING)
                 .limit(1)

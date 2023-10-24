@@ -12,7 +12,6 @@ public class Board {
     private String board_name;
     private String board_title;
     private String board_content;
-    private String board_tag;
     private String user_id;
     private boolean board_del;
     private String board_photo1;
@@ -25,9 +24,7 @@ public class Board {
     private Timestamp board_date;
     private Timestamp board_del_date;
     private int board_great;
-    private String board_thumbnail;
-
-    private String itemTitle;
+    private int board_reply;
 
 
 
@@ -36,17 +33,19 @@ public class Board {
     public Board() {
     }
 
-    public Board(int board_number, String board_name, String board_title, String board_content, String board_tag, String user_id, String board_photo, Timestamp board_date, int board_great) {
+    public Board(int board_number, String board_name, String board_title, String board_content, String user_id, String board_photo, Timestamp board_date, int board_great, int board_reply) {
         this.board_number = board_number;
         this.board_name = board_name;
         this.board_title = board_title;
         this.board_content = board_content;
-        this.board_tag = board_tag;
         this.user_id = user_id;
         this.board_photo1 = board_photo;
         this.board_date = board_date;
         this.board_great = board_great;
+        this.board_reply = board_reply;
     }
+
+
 
     public boolean isBoard_del() {
         return board_del;
@@ -62,6 +61,14 @@ public class Board {
 
     public void setBoard_del_date(Timestamp board_del_date) {
         this.board_del_date = board_del_date;
+    }
+
+    public int getBoard_reply() {
+        return board_reply;
+    }
+
+    public void setBoard_reply(int board_reply) {
+        this.board_reply = board_reply;
     }
 
     public String getBoard_photo2() {
@@ -94,14 +101,6 @@ public class Board {
 
     public void setBoard_photo5(String board_photo5) {
         this.board_photo5 = board_photo5;
-    }
-
-    public String getItemTitle() {
-        return itemTitle;
-    }
-
-    public void setItemTitle(String itemTitle) {
-        this.itemTitle = itemTitle;
     }
 
 
@@ -145,13 +144,6 @@ public class Board {
         this.board_content = board_content;
     }
 
-    public String getBoard_tag() {
-        return board_tag;
-    }
-
-    public void setBoard_tag(String board_tag) {
-        this.board_tag = board_tag;
-    }
 
     public String getUser_id() {
         return user_id;
@@ -177,13 +169,6 @@ public class Board {
         this.board_great = board_great;
     }
 
-    public String getBoard_thumbnail() {
-        return board_thumbnail;
-    }
-
-    public void setBoard_thumbnail(String board_thumbnail) {
-        this.board_thumbnail = board_thumbnail;
-    }
 
     @Override
     public String toString() {
@@ -192,12 +177,16 @@ public class Board {
                 ", board_name='" + board_name + '\'' +
                 ", board_title='" + board_title + '\'' +
                 ", board_content='" + board_content + '\'' +
-                ", board_tag='" + board_tag + '\'' +
                 ", user_id='" + user_id + '\'' +
+                ", board_del=" + board_del +
+                ", board_photo1='" + board_photo1 + '\'' +
+                ", board_photo2='" + board_photo2 + '\'' +
+                ", board_photo3='" + board_photo3 + '\'' +
+                ", board_photo4='" + board_photo4 + '\'' +
+                ", board_photo5='" + board_photo5 + '\'' +
                 ", board_date=" + board_date +
+                ", board_del_date=" + board_del_date +
                 ", board_great=" + board_great +
                 '}';
     }
-
-
 }

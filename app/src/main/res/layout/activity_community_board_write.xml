@@ -62,7 +62,7 @@
                 android:ems="10"
                 android:gravity="left"
                 android:hapticFeedbackEnabled="false"
-                android:hint="본문(필수) -최소 1자 ~ 5000자 이내 작성할 수 있어요.\n게시물이 다른 유저로부터 신고를 받거나 운영 정책에 \n맞지 않을 경우 숨김 처리 돼요."
+                android:hint="본문(필수) -최소 10자 ~ 500자 이내 작성할 수 있어요.\n게시물이 다른 유저로부터 신고를 받거나 운영 정책에 \n맞지 않을 경우 숨김 처리 돼요."
                 android:inputType="textMultiLine"
                 android:maxLength="501"
                 android:paddingStart="25dp"

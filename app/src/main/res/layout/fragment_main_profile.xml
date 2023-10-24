@@ -12,10 +12,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="아이디"
+        android:layout_marginEnd="10dp"
         android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="@+id/imageView8"
-        app:layout_constraintStart_toStartOf="@+id/imageView8"
+        app:layout_constraintEnd_toStartOf="@+id/btnProfileLogin"
         app:layout_constraintTop_toBottomOf="@+id/imageView8" />
 
     <TextView
@@ -73,6 +72,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_marginStart="50dp"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
@@ -94,8 +94,9 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="81dp"
             android:layout_height="match_parent"
+            android:layout_marginEnd="50dp"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
@@ -116,28 +117,6 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/textView72"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="전문가 인증" />
-
-            <TextView
-                android:id="@+id/textView67"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center|top"
-                android:text="인증 전"
-                android:textStyle="bold" />
-        </LinearLayout>
     </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatButton

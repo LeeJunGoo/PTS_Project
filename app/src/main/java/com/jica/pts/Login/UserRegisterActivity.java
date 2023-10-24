@@ -48,8 +48,8 @@ public class UserRegisterActivity extends AppCompatActivity {
         buttonJoin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 이메일과 비밀번호가 공백이 아닌 경우
-                if (!editTextEmail.getText().toString().equals("") && !etpassWord.getText().toString().equals("") &&  !etpassWordck.getText().toString().equals("")) {
+                // 이메일과 비밀번호가 공백 여부 및 비밀번호 일치여부
+                if (!editTextEmail.getText().toString().equals("") && !etpassWord.getText().toString().equals("") && etpassWord.getText().toString().equals(etpassWordck.getText().toString())) {
                     createUser(editTextEmail.getText().toString(), etpassWord.getText().toString(), etpassWordck.getText().toString());
                 } else {
                     // 이메일과 비밀번호가 공백인 경우
@@ -68,12 +68,11 @@ public class UserRegisterActivity extends AppCompatActivity {
                             // 회원가입 성공시
                             Toast.makeText(UserRegisterActivity.this, "회원가입 성공", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), UserRegisterCheckActivity.class);
-
                             startActivity(intent);
 
                         } else {
                             // 회원가입 실패시(데이터 유효성 검사: 아이디 중복 및 비밀번호 일치 여부 및 비밀번호 6글자 이상)
-                            Toast.makeText(UserRegisterActivity.this, "회원가입 실패", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(UserRegisterActivity.this, "아이디와 비밀번호를 다시 확인해주세요", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
