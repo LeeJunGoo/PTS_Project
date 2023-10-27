@@ -2,18 +2,16 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/ConstraintLy"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Community_Fragmenet.CommunityDetailPage">
 
     <ScrollView
-        android:id="@+id/scrollView"
+        android:id="@+id/scr"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/LinearReply"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -84,7 +82,7 @@
                 android:layout_marginTop="10dp"
                 app:layout_constraintBottom_toTopOf="@+id/layoutIndicators"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout10" />
 
@@ -100,11 +98,10 @@
                 app:layout_constraintTop_toBottomOf="@+id/sliderViewPager" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/ConLay"
+                android:id="@+id/constraintLayout5"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="5dp"
-                app:layout_constraintBottom_toTopOf="@+id/rcReply"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/sliderViewPager">
 
@@ -184,10 +181,11 @@
                 android:id="@+id/rcReply"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ConLay" />
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout5" />
 
             <Button
                 android:id="@+id/btnDelect"
@@ -205,6 +203,46 @@
     </ScrollView>
 
     <LinearLayout
+        android:id="@+id/LinearSubReply"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:background="@drawable/shape_tetragon11"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <EditText
+            android:id="@+id/etSubReply"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/shape_tetragon9"
+            android:ems="10"
+            android:hapticFeedbackEnabled="false"
+            android:hint="답글을 입력해주세요!"
+            android:inputType="textMultiLine"
+            android:paddingStart="25dp"
+            android:selectAllOnFocus="false"
+            android:textColorHighlight="#191616"
+            android:textSize="14sp" />
+
+        <ImageButton
+            android:id="@+id/imgSubReplyCheck"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:background="#00FFFFFF"
+            android:contentDescription="null"
+            android:padding="10dp"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/icon_check2" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/LinearReply"
         android:layout_width="0dp"
         android:layout_height="60dp"
@@ -214,8 +252,7 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scrollView">
+        app:layout_constraintStart_toStartOf="parent">
 
         <EditText
             android:id="@+id/etReply"

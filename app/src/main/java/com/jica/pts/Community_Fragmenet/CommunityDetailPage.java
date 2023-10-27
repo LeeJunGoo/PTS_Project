@@ -60,14 +60,15 @@ import java.util.Map;
 
 public class CommunityDetailPage extends AppCompatActivity {
     private boolean isProcessingClick = false;
+    private boolean isSubReply = false;
 
 
     //UI 객체 선언
     TextView tvDetailTitle, tvDetailId, tvDetailTime, tvDetailContent, tvDetailCount, tvDetailCount2;
-    EditText etReply;
-    ImageButton imgGreat, imgReplyCheck, imgbtnReply;
+    EditText etReply, etSubReply;
+    ImageButton imgGreat, imgReplyCheck, imgbtnReply, imgSubReplyCheck;
     Button btnDelect;
-    LinearLayout LinearReply;
+    LinearLayout LinearReply, LinearSubReply;
 
 
     //이미지 객체 선언 1)
@@ -105,11 +106,14 @@ public class CommunityDetailPage extends AppCompatActivity {
         tvDetailCount = findViewById(R.id.tvDetailCount);
         tvDetailCount2 = findViewById(R.id.tvDetailCount2);
         etReply = findViewById(R.id.etReply);
+        etSubReply = findViewById(R.id.etSubReply);
         imgGreat = findViewById(R.id.imgGreat);
         btnDelect = findViewById(R.id.btnDelect);
         imgReplyCheck = findViewById(R.id.imgReplyCheck);
+        imgSubReplyCheck= findViewById(R.id.imgSubReplyCheck);
         imgbtnReply= findViewById(R.id.imgbtnReply);
         LinearReply= findViewById(R.id.LinearReply);
+        LinearSubReply= findViewById(R.id.LinearSubReply);
 
 
 
@@ -174,8 +178,7 @@ public class CommunityDetailPage extends AppCompatActivity {
         replyAdapter.setOnItemClickListener(new OnReplyClickListener() {
             @Override
             public void onItemClick(ReplyAdapter.ReplyViewHolder viewHolder, View view, int position) {
-                handleReplyButtonClick();
-                etReply.setHint("답글을 입력해주세요!");
+                handleSubReplyButtonClick();
 
             }
         });
@@ -196,7 +199,6 @@ public class CommunityDetailPage extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 handleReplyButtonClick();
-                etReply.setHint("댓글을 입력해주세요!");
             }
         });
 
@@ -274,12 +276,18 @@ public class CommunityDetailPage extends AppCompatActivity {
     }
 
 
+    //댓글 이미지 버튼 클릭 시 댓글 입력창 VISIBLE 및 GONE 형태 만들기
+    //댓글 입력창 VISIBLE일 경우 답글 입력창 GONE 형태 만들기
     private void handleReplyButtonClick() {
         if (CurrentUser != null) {
             if (imgbtnReply.isSelected()) {
-                LinearReply.setVisibility(View.GONE);
+               LinearReply.setVisibility(View.GONE);
             } else {
                 LinearReply.setVisibility(View.VISIBLE);
+                LinearSubReply.setVisibility(View.GONE);
+                //댓글 입력창을 닫지않고 바로 답글작성 버튼 클릭 시 기존 isSubReply 값인 true가 존재하여
+                //버튼이 한번 작동하지않는 형태로 보인다. 그러므로 답글 변환값인 false을 주어야한다.
+                isSubReply = false;
             }
              imgbtnReply.setSelected(!imgbtnReply.isSelected());
         } else {
@@ -287,6 +295,25 @@ public class CommunityDetailPage extends AppCompatActivity {
         }
 
     }
+
+    private void handleSubReplyButtonClick() {
+        if (CurrentUser != null) {
+            if (isSubReply != false) {
+                LinearSubReply.setVisibility(View.GONE);
+                isSubReply = false;
+            } else {
+                LinearSubReply.setVisibility(View.VISIBLE);
+                LinearReply.setVisibility(View.GONE);
+                //댓글 버튼 변환값 설정
+                imgbtnReply.setSelected(false);
+                isSubReply = true;
+            }
+        } else {
+            LoginDialog();
+        }
+
+    }
+
 
     private void LoginDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(CommunityDetailPage.this);
