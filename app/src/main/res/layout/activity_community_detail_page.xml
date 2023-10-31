@@ -206,7 +206,7 @@
         android:id="@+id/LinearSubReply"
         android:layout_width="0dp"
         android:layout_height="60dp"
-        android:background="@drawable/shape_tetragon11"
+        android:background="@drawable/shape_tetragon8"
         android:gravity="center"
         android:orientation="horizontal"
         android:visibility="gone"
@@ -228,7 +228,7 @@
             android:paddingStart="25dp"
             android:selectAllOnFocus="false"
             android:textColorHighlight="#191616"
-            android:textSize="14sp" />
+            android:textSize="15sp" />
 
         <ImageButton
             android:id="@+id/imgSubReplyCheck"
@@ -268,7 +268,7 @@
             android:paddingStart="25dp"
             android:selectAllOnFocus="false"
             android:textColorHighlight="#191616"
-            android:textSize="14sp" />
+            android:textSize="15sp" />
 
         <ImageButton
             android:id="@+id/imgReplyCheck"

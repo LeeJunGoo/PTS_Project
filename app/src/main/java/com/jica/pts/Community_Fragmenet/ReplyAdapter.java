@@ -2,10 +2,12 @@ package com.jica.pts.Community_Fragmenet;
 
 
 import android.content.Context;
+import android.graphics.Color;
 import android.icu.text.SimpleDateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -45,7 +47,6 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
     @Override
     public void onBindViewHolder(@NonNull ReplyViewHolder holder, int position) {
         holder.tvReplyContent.setText(replyArrayList.get(position).getReply_content());
-
         holder.tvReplyID.setText(replyArrayList.get(position).getUser_id());
         // Timestamp형으로 저장된 시간을 여기서 쓸수 있게 string형으로 변환
         Timestamp timestamp = replyArrayList.get(position).getReply_date();
@@ -54,6 +55,27 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
         SimpleDateFormat dateFormat = new SimpleDateFormat("yy.MM.dd");
         String board_date = dateFormat.format(date);
         holder.tvReplyDate.setText(board_date);
+
+        //대댓글 일경우
+        //왼쪽 topMargin 효과 및 답글작성 버튼 비활성화
+        if(replyArrayList.get(position).getReply_revel() == 2){
+            holder.leftMargin.setText("1");
+            holder.tvReply.setVisibility(View.GONE);
+        }
+        //댓글일 경우
+        //왼쪽 topMargin 효과 비활성화 및 답글작성 버튼 활성화, 위쪽 topMargin 효과 활성화
+        if(replyArrayList.get(position).getReply_revel() == 1){
+            holder.leftMargin.setText("");
+            holder.tvReply.setVisibility(View.VISIBLE);
+            holder.topMargin.setVisibility(View.VISIBLE);
+
+
+            //첫번째 댓글일 경우
+            //위쪽 topMargin 효과 비활성화
+            if(replyArrayList.get(position).getReply_number() == 1){
+                holder.topMargin.setVisibility(View.GONE);
+            }
+        }
 
     }
 
@@ -89,7 +111,9 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
     //final OnPersonItemClickListener listener==> final(상수) 선언으로 인해 내부에서 변경 불가
     public class ReplyViewHolder extends RecyclerView.ViewHolder  {
         //UI 객체 선언
-        TextView tvReplyContent, tvReplyID, tvReplyDate, tvReply;
+        TextView tvReplyContent, tvReplyID, tvReplyDate,leftMargin;
+        ImageView tvReply;
+        View topMargin;
 
         public ReplyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -98,6 +122,8 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
             tvReplyID = itemView.findViewById(R.id.tvReplyID);
             tvReplyDate = itemView.findViewById(R.id.tvReplyDate);
             tvReply= itemView.findViewById(R.id.tvReply);
+            topMargin= itemView.findViewById(R.id.topMargin);
+            leftMargin=itemView.findViewById(R.id.leftMargin);
 
 
             //변경된 부분 2
@@ -106,6 +132,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
                 public void onClick(View view) {
                     int position = getAdapterPosition();
                     if (listener != null) {
+
                         //listener는 현재의 Adpapter 객체를 의미한다.
                         //그러므로 아래의 코드는 현재 Adapter객체의 onItemClick()메서드를 호출한다.
                         //현재의 게시글 위치 전송
@@ -114,6 +141,8 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
                     }
                 }
             });
+
+
 
 
         }

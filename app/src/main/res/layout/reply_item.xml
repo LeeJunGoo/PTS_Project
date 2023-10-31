@@ -1,28 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="15dp">
+    android:layout_height="wrap_content">
+
+    <View
+        android:id="@+id/topMargin"
+        android:layout_width="wrap_content"
+        android:layout_height="12dp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/topMargin">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/leftMargin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#00000000"
+            android:textSize="46sp"
+            android:visibility="visible" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content">
 
             <ImageView
+                android:id="@+id/imageView5"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_marginStart="20dp"
+                android:layout_marginStart="15dp"
                 android:background="@drawable/shape_circle4"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -33,14 +48,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
                 android:text="잘자라다오"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView5"
+                app:layout_constraintStart_toEndOf="@+id/imageView5"
+                app:layout_constraintTop_toTopOf="@+id/imageView5" />
 
             <TextView
                 android:id="@+id/tvReplyDate"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
                 android:gravity="right"
@@ -48,32 +64,32 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
             <TextView
                 android:id="@+id/tvReplyContent"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:text="새로운 친구가 생겼어요 이름은 이준구라구 할려구용 ㅎㅎ 다들 좋은 하루 되시고 제 꽃 보고 행복하셔여영~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" />
+                android:layout_marginTop="3dp"
+                android:text="새로운 친구가 생겼어요 이름은 이준구라구 할려구용 ㅎㅎ 다들 좋은 하루 되시고 제 꽃 보고 행복하셔여영~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/tvReplyID"
+                app:layout_constraintTop_toBottomOf="@+id/imageView5" />
 
-        </LinearLayout>
+            <ImageView
+                android:id="@+id/tvReply"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="53dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="15dp"
+                android:padding="5dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvReplyContent"
+                app:layout_constraintVertical_bias="0.0"
+                app:srcCompat="@drawable/icon_reply" />
 
-        <TextView
-            android:id="@+id/tvReply"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="2dp"
-            android:text="답글 작성"
-            android:textColor="#8F8E8E"
-            android:textSize="13sp"
-            android:visibility="visible" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

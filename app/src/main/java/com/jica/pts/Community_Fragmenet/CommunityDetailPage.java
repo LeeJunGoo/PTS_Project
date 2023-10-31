@@ -53,6 +53,7 @@ import com.jica.pts.Login.UserTotalLoginActivity;
 import com.jica.pts.MainFragment.BottomTabActivity;
 import com.jica.pts.R;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -174,15 +175,6 @@ public class CommunityDetailPage extends AppCompatActivity {
         }
 
 
-        //답글 버튼 이벤트 핸들러
-        replyAdapter.setOnItemClickListener(new OnReplyClickListener() {
-            @Override
-            public void onItemClick(ReplyAdapter.ReplyViewHolder viewHolder, View view, int position) {
-                handleSubReplyButtonClick();
-
-            }
-        });
-
 
         //삭제 버튼 이벤트 핸들러
         btnDelect.setOnClickListener(new View.OnClickListener() {
@@ -194,7 +186,7 @@ public class CommunityDetailPage extends AppCompatActivity {
 
 
 
-        //댓글 유효성 이벤트 핸들러
+        //댓글 클릭 이벤트 핸들러
         imgbtnReply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -203,22 +195,56 @@ public class CommunityDetailPage extends AppCompatActivity {
         });
 
 
-
         //EditText) 댓글 입력 버튼 이벤트 핸들러
         imgReplyCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (CurrentUser != null) {
+                if (!(etReply.getText().toString().equals(""))) {
+                    //입력한 댓글 정보를 DB에 저장하기
+                    saveReplyDataWithNextDocumentId(Board_number, 1, 0);
+
+                    //댓글 수 DB에 저장하기
                     saveReply(Board_number, Integer.valueOf(tvDetailCount2.getText().toString()));
+
                     // 입력 후 키패드 내리기
                     InputMethodManager manager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
                     manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                     LinearReply.setVisibility(View.GONE);
+                    imgbtnReply.setSelected(false);
 
+                }else {
+                    Toast.makeText(CommunityDetailPage.this, "내용을 입력해주세요", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
+        //답글 버튼 이벤트 핸들러
+        replyAdapter.setOnItemClickListener(new OnReplyClickListener() {
+            @Override
+            public void onItemClick(ReplyAdapter.ReplyViewHolder viewHolder, View view, int position) {
+                    handleSubReplyButtonClick();
+                    imgSubReplyCheck.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (!(etSubReply.getText().toString().equals(""))) {
+                                saveReplyDataWithNextDocumentId(Board_number, 2, position);
+
+                                // 입력 후 키패드 내리기
+                                InputMethodManager manager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                                manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                                LinearSubReply.setVisibility(View.GONE);
+                                isSubReply = false;
+                            }else {
+                                Toast.makeText(CommunityDetailPage.this, "내용을 입력해주세요", Toast.LENGTH_SHORT).show();
+                                
+                            }
+
+                        }
+                    });
+              
+               
+            }
+        });
 
 
         //좋아요 버튼 이벤트 핸들러
@@ -285,9 +311,10 @@ public class CommunityDetailPage extends AppCompatActivity {
             } else {
                 LinearReply.setVisibility(View.VISIBLE);
                 LinearSubReply.setVisibility(View.GONE);
-                //댓글 입력창을 닫지않고 바로 답글작성 버튼 클릭 시 기존 isSubReply 값인 true가 존재하여
-                //버튼이 한번 작동하지않는 형태로 보인다. 그러므로 답글 변환값인 false을 주어야한다.
+                etReply.setText("");
+                //답글 입력창 초기값으로 설정
                 isSubReply = false;
+
             }
              imgbtnReply.setSelected(!imgbtnReply.isSelected());
         } else {
@@ -304,9 +331,10 @@ public class CommunityDetailPage extends AppCompatActivity {
             } else {
                 LinearSubReply.setVisibility(View.VISIBLE);
                 LinearReply.setVisibility(View.GONE);
-                //댓글 버튼 변환값 설정
-                imgbtnReply.setSelected(false);
+                etSubReply.setText("");
                 isSubReply = true;
+                //댓글 입력창 초기값으로 설정
+                imgbtnReply.setSelected(false);
             }
         } else {
             LoginDialog();
@@ -429,10 +457,13 @@ public class CommunityDetailPage extends AppCompatActivity {
 
 
 
-    //
+    // 현재 댓글 정보 UI 화면에 보여주기 및 댓글 정렬의 핵심 부분이다.!!
+    // 댓글 및 대댓글 정렬 기준은 reply_check_revel로 설정
+    // 형식: "댓글시간" "-" "대댓글 시간" (날짜를 문자 형식으로 받아온다.)
+    // reply_number 및 날짜 정렬은 댓글 및 대댓글 정렬 기준에 맞지 않으므로 (정렬 조건)을 reply_check_revel로 한다.
     private void LoadReply(int BoardNumber) {
         db.collection("Board").document(String.valueOf(BoardNumber))
-                .collection("Reply").orderBy("reply_date", Query.Direction.DESCENDING).get()
+                .collection("Reply").orderBy("reply_check_revel", Query.Direction.ASCENDING).get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         replyArrayList.clear();
@@ -459,8 +490,6 @@ public class CommunityDetailPage extends AppCompatActivity {
                 .update("board_reply", reply_Count+1).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                       //댓글 정보를 DB에 저장하기
-                        saveReplyDataWithNextDocumentId(Board_number);
                         //댓글 수 읽어오기
                         ReplyUpCount(Board_number);
 
@@ -474,7 +503,7 @@ public class CommunityDetailPage extends AppCompatActivity {
     //    하위 컬랙션인 "Reply" 컬랙션의 문서 조회 및 생성  ==> 조회 및 생성 초기값이 없으면 자동 생성된다.
     // 2) "reply_number"인 필드값을 기준으로 내림차순으로 정렬하고(Query.Direction.DESCENDING), ==> 문서 값 변화: 4 -> 3 -> 2 -> 1
     //    가장 최근(최신) 문서 1개를 가져와서(limit(1)) 문서 값을 계속 증가 시킨다.
-    private void saveReplyDataWithNextDocumentId(int Board_number) {
+    private void saveReplyDataWithNextDocumentId(int Board_number, int revel, int position) {
         db.collection("Board").document(String.valueOf(Board_number)).collection("Reply")
                 .orderBy("reply_number", Query.Direction.DESCENDING)
                 .limit(1)
@@ -494,11 +523,11 @@ public class CommunityDetailPage extends AppCompatActivity {
                             long nextDocumentId = currentDocumentId + 1;
 
                             // DB(firestore)에 저장
-                            saveReplyData(Board_number, nextDocumentId);
+                            saveReplyData(Board_number, nextDocumentId, revel, position);
 
                         } else {
                             //Reply 컬렉션에 문서(document)가 없는 경우, 문서 id 초기값을 1로 설정합니다.
-                            saveReplyData(Board_number, 1);
+                            saveReplyData(Board_number, 1, revel, position);
                         }
                     }
 
@@ -512,21 +541,30 @@ public class CommunityDetailPage extends AppCompatActivity {
     }
 
 
-    private void saveReplyData(long Board_number, long nextDocumentId) {
+    // Bean 객체에 선언하지 않을 경우 기본값으로 String null, int는 0으로 db에 저장된다, boolean 초기값은 false이다.
+    private void saveReplyData(long Board_number, long nextDocumentId, int revel, int position) {
         Reply reply = new Reply();
-        Timestamp date = Timestamp.now();
+        Timestamp timestamp = Timestamp.now();
+        Date date = timestamp.toDate();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        String reply_date = dateFormat.format(date);
 
-        // Bean 객체에 선언하지 않을 경우 기본값으로 String null, int는 0으로 db에 저장된다, boolean 초기값은 false이다.
+
         reply.setUser_id(CurrentUser.getEmail());
-        if (etReply.getText().toString().isEmpty()) {
-            Toast.makeText(this, "댓글내용을 입력해주세요", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        reply.setReply_content(etReply.getText().toString());
-        reply.setReply_date(date);
+        reply.setReply_date(timestamp);
         reply.setReply_number((int) nextDocumentId);
-        reply.setReply_check_revel(String.valueOf(nextDocumentId));
 
+    if(revel == 1){
+        reply.setReply_content(etReply.getText().toString());
+            reply.setReply_revel(revel);
+            reply.setReply_check_revel(reply_date);
+
+        }else if (revel == 2){
+            reply.setReply_content(etSubReply.getText().toString());
+            String ReplyRevel = replyArrayList.get(position).getReply_check_revel();
+            reply.setReply_revel(revel);
+            reply.setReply_check_revel(ReplyRevel + "-" + reply_date);
+        }
 
         //쿼리문 해석: 상위컬랙션인 Board 컬랙션의 문서 번호가 Board_number인 곳의 하위컬랙션인 Reply에 데이터 저장
         db.collection("Board").document(String.valueOf(Board_number))
@@ -535,6 +573,7 @@ public class CommunityDetailPage extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
+                        //저장한 댓글 정보 UI 화면에 보여주기
                         LoadReply((int) Board_number);
                         etReply.setText("");
                     }
@@ -546,8 +585,9 @@ public class CommunityDetailPage extends AppCompatActivity {
 
                     }
                 });
-        // finish();
+
     }
+
 
 
     private void loadPhotosFromFirebaseStorage(int document) {

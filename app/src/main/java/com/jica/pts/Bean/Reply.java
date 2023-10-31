@@ -2,6 +2,8 @@ package com.jica.pts.Bean;
 
 import com.google.firebase.Timestamp;
 
+// Bean 객체를 사용하지 않고 선언할 경우
+// 기본값으로 String null, int는 0, boolean false로 db에 저장된다.
 public class Reply {
     private String user_id;
     private String reply_content;
@@ -10,8 +12,9 @@ public class Reply {
     private int reply_number;  //댓글 번호
     private int reply_revel;   //댓글 레벨 1,2,3
     private String reply_check_revel;  // 댓글 핵심 부분이다.!!
-                                       // 형식: 댓글 번호 - 대댓글 시간 - 대대댓글 시간 (숫자 형식으로 받아온다)
-                                       // 그래서 order by(정렬 조건)을 reply_check_revel로 하면된다.
+                                       // 형식: "댓글시간" "-" "대댓글 시간" (날짜를 문자 형식으로 받아온다.)
+                                       // reply_number 및 날짜로 정렬을 안하는 이유는 댓글 및 대댓글 정렬 기준으로 맞지 않다
+                                       // 그래서 (정렬 조건)을 reply_check_revel로 한다.
 
 
     public Reply() {
