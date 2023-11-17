@@ -227,7 +227,9 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardViewHol
 
                         listener.onItemClick(BoardViewHolder.this, view, position);
 
+
                     }
+
                 }
             });
 

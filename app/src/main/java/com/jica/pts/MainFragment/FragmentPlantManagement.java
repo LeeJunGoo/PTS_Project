@@ -177,13 +177,17 @@ public class FragmentPlantManagement extends Fragment {
             //1. 사이드바 이벤트 핸들러
             if (curId == R.id.imgmenu) {
                 isPageOpen = false;
-                //닫기
                 if (isPageOpen) {
-                    sidemenu.startAnimation(translateRightAnim);
                     //열기
                 } else {
+                    //사이드 메뉴 VISIBLE로 변경
                     sidemenu.setVisibility(View.VISIBLE);
+                   //사이드메뉴 안에 있는 하위 구성 요소들을 ViISIBLE로 변경
                     sidemenu.startAnimation(translateLeftAnim);
+                    for (int i= 0; i< sidemenu.getChildCount(); i++){
+                        sidemenu.getChildAt(i).setVisibility(View.VISIBLE);
+                    }
+
 
                 }
                 ;
@@ -191,12 +195,9 @@ public class FragmentPlantManagement extends Fragment {
             } else if (curId == R.id.btnclose) {
                 //닫기
                 if (isPageOpen) {
-                    sidemenu.setVisibility(View.VISIBLE);
+                    sidemenu.setVisibility(View.GONE);
                     sidemenu.startAnimation(translateRightAnim);
-
-                    //열기
                 } else {
-                    sidemenu.startAnimation(translateLeftAnim);
 
                 }
                 //식물 등록 이벤트 핸들러
@@ -213,10 +214,6 @@ public class FragmentPlantManagement extends Fragment {
                     startActivity(intent);
 
                 }
-
-
-
-
 
 
                 //사이드바 내부 이벤트 핸들러
@@ -261,16 +258,17 @@ public class FragmentPlantManagement extends Fragment {
         public void onAnimationEnd(Animation animation) {
             //슬라이드 열기->닫기
             if (isPageOpen) {
-                //imgmenu.setVisibility(View.VISIBLE);
+                //애니메이션 효과가 끝난 이후에 구성요소들을 GONE형태로 바꿔야 자연스럽게 연결된다.
+                for (int i= 0; i< sidemenu.getChildCount(); i++){
+                   sidemenu.getChildAt(i).setVisibility(View.GONE);
+                }
+
                 imgmenu.setClickable(true);
-                sidemenu.setVisibility(View.VISIBLE);
                 isPageOpen = false;
             }
             //슬라이드 닫기->열기
             else {
-                //imgmenu.setVisibility(View.INVISIBLE);
                 imgmenu.setClickable(false);
-                sidemenu.setVisibility(View.VISIBLE);
                 isPageOpen = true;
             }
         }

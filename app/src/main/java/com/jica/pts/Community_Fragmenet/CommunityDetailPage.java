@@ -1,13 +1,11 @@
 package com.jica.pts.Community_Fragmenet;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.icu.text.SimpleDateFormat;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -16,7 +14,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,7 +50,6 @@ import com.jica.pts.Login.UserTotalLoginActivity;
 import com.jica.pts.MainFragment.BottomTabActivity;
 import com.jica.pts.R;
 
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -62,14 +58,18 @@ import java.util.Map;
 public class CommunityDetailPage extends AppCompatActivity {
     private boolean isProcessingClick = false;
     private boolean isSubReply = false;
+    private boolean isModify = false;
+    private int Board_number = 0;
 
 
     //UI 객체 선언
-    TextView tvDetailTitle, tvDetailId, tvDetailTime, tvDetailContent, tvDetailCount, tvDetailCount2;
+    TextView tvDetailTitle, tvDetailId, tvDetailTime, tvDetailContent, tvDetailCount, tvDetailCount2, tvBoard_name;
     EditText etReply, etSubReply;
+    ImageView imgmodify;
     ImageButton imgGreat, imgReplyCheck, imgbtnReply, imgSubReplyCheck;
-    Button btnDelect;
+    Button btndelete, btnClose, btnModify;
     LinearLayout LinearReply, LinearSubReply;
+    ConstraintLayout ConModify;
 
 
     //이미지 객체 선언 1)
@@ -108,13 +108,18 @@ public class CommunityDetailPage extends AppCompatActivity {
         tvDetailCount2 = findViewById(R.id.tvDetailCount2);
         etReply = findViewById(R.id.etReply);
         etSubReply = findViewById(R.id.etSubReply);
+        imgmodify= findViewById(R.id.imgmodify);
         imgGreat = findViewById(R.id.imgGreat);
-        btnDelect = findViewById(R.id.btnDelect);
+        btndelete = findViewById(R.id.btndelete);
         imgReplyCheck = findViewById(R.id.imgReplyCheck);
         imgSubReplyCheck= findViewById(R.id.imgSubReplyCheck);
         imgbtnReply= findViewById(R.id.imgbtnReply);
         LinearReply= findViewById(R.id.LinearReply);
         LinearSubReply= findViewById(R.id.LinearSubReply);
+        ConModify= findViewById(R.id.ConModify);
+        btnClose= findViewById(R.id.btnClose);
+        btnModify= findViewById(R.id.btnModify);
+        tvBoard_name= findViewById(R.id.tvBoard_name);
 
 
 
@@ -151,14 +156,16 @@ public class CommunityDetailPage extends AppCompatActivity {
 
         //FragmentPlayGroundCommunity에서 저장(putExtra)한 문서(document)번호를 intent 객체로 불러오기
         Intent BoardIntent = getIntent();
-        int Board_number = Integer.valueOf(BoardIntent.getStringExtra("Board_number"));
+        Board_number = Integer.valueOf(BoardIntent.getStringExtra("Board_number"));
+
+
 
 
         //Firebase Storage에서 파일 목록 불러오기
         loadPhotosFromFirebaseStorage(Board_number);
 
 
-        //DB에 저장된 Board 객체 읽어오기
+        //DB에 저장된 Board 객체 읽어오기 및 삭제 유효성 검사
         readDataFromFirestore(Board_number);
 
         //DB에 저장된 Reply 객체 읽어오기
@@ -175,12 +182,45 @@ public class CommunityDetailPage extends AppCompatActivity {
         }
 
 
+       imgmodify.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+             ConModify.setVisibility(View.VISIBLE);
+             imgmodify.setVisibility(View.GONE);
+           }
+       });
+
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ConModify.setVisibility(View.GONE);
+                imgmodify.setVisibility(View.VISIBLE);
+
+            }
+        });
+
+
 
         //삭제 버튼 이벤트 핸들러
-        btnDelect.setOnClickListener(new View.OnClickListener() {
+        btndelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 handleDeleteButtonClick(Board_number);
+            }
+        });
+
+        //수정 버튼 이벤트 핸들러
+        btnModify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                        Intent intent = new Intent(getApplicationContext(),CommunityBoardModifyActivity.class);
+                        intent.putExtra("Board_number", Board_number+"");
+                        intent.putExtra("board_title" , tvDetailTitle.getText().toString());
+                        intent.putExtra("board_name",  tvBoard_name.getText().toString());
+                        intent.putExtra("board_content", tvDetailContent.getText().toString());
+                        intent.putStringArrayListExtra("board_photo", photoUris);
+                        startActivity(intent);
+                        finish();
             }
         });
 
@@ -259,7 +299,15 @@ public class CommunityDetailPage extends AppCompatActivity {
     }
 
 
-
+    private void SelectClose() {
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ConModify.setVisibility(View.GONE);
+                isModify= false;
+            }
+        });
+    }
 
 
     private void handleLikeButtonClick(int Board_number) {
@@ -430,6 +478,7 @@ public class CommunityDetailPage extends AppCompatActivity {
                         }
                     }
                 });
+
     }
 
     //위의 readDataFromFirestore에서 가공한 데이터들을 현재의 UI 객체에 저장한다.
@@ -440,6 +489,7 @@ public class CommunityDetailPage extends AppCompatActivity {
         tvDetailId.setText(board.getUser_id());
         tvDetailCount.setText(String.valueOf(board.getBoard_great()));
         tvDetailCount2.setText(String.valueOf(board.getBoard_reply()));
+        tvBoard_name.setText(board.getBoard_name());
 
         Timestamp timestamp = board.getBoard_date();
         //Date 객체로 형변환 이유==> FireStore.txt에 설명
@@ -451,7 +501,7 @@ public class CommunityDetailPage extends AppCompatActivity {
 
         // 현재 접속ID와 글 작성ID 일치 여부 후 삭제 버튼 Visible 및 gone 형태 유지
         if (CurrentUser != null && CurrentUser.getEmail().equals(tvDetailId.getText())) {
-            btnDelect.setVisibility(View.VISIBLE);
+            imgmodify.setVisibility(View.VISIBLE);
         }
     }
 
@@ -495,6 +545,7 @@ public class CommunityDetailPage extends AppCompatActivity {
 
                     }
                 });
+
 
     }
 
@@ -596,6 +647,7 @@ public class CommunityDetailPage extends AppCompatActivity {
 
         // Firebase Storage의 "images/" 경로에 있는 파일 목록을 가져옵니다.
         storage.getReference().child("images/PTS/" + document).listAll().addOnCompleteListener(new OnCompleteListener<ListResult>() {
+
             @Override
             public void onComplete(@NonNull Task<ListResult> task) {
                 if (task.isSuccessful()) {
@@ -607,17 +659,22 @@ public class CommunityDetailPage extends AppCompatActivity {
                                 // URI를 String 형변환 후 대입 성공적으로 가져왔을 때 처리
                                 photoUris.add(uri.toString());
                                 setupIndicators(photoUris.size());
+
                                 adapter.notifyDataSetChanged();
+
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
+                                Log.e("TAG", "Error fetching download URL", e);
+
                                 // URI를 가져오지 못했을 때 처리
                                 e.printStackTrace();
                             }
                         });
                     }
                 } else {
+
                    Log.d("TAG", "CommunityDetailPage의 loadPhotosFromFirebaseStorage 쿼리문에서 error 발생", task.getException());
                 }
             }
@@ -816,6 +873,8 @@ public class CommunityDetailPage extends AppCompatActivity {
         });
 
     }
+
+
 
 
   //DB에 새로 저장한 댓글 개수를 실시간으로 UI화면에 적용하기(뿌려주기)

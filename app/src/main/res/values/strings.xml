@@ -11,6 +11,7 @@
     <!-- textView 두께(bold) 및 색상(color) 변경
          코드 및 색깔이름으로 변경가능             -->
     <string name="register_out"><u><font color='red'><b>회원 탈퇴</b></font></u> 입니다.</string>
+    <string name="title_activity_community_board_modify">CommunityBoardModifyActivity</string>
 
 
 </resources>

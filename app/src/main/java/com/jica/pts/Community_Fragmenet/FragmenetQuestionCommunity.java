@@ -2,15 +2,14 @@ package com.jica.pts.Community_Fragmenet;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -37,6 +36,7 @@ public class FragmenetQuestionCommunity extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+
         //데이터 검색 이전 틀을 미리 만들어 놓고 검색 후 바로 대입 방식
         arrayList = new ArrayList<>();
         adapter = new BoardAdapter(arrayList,getActivity());
@@ -47,7 +47,6 @@ public class FragmenetQuestionCommunity extends Fragment {
 
         //데이터 가져오기
         loadBoardData();
-
 
         //2. 게시판의 "더보기" 이벤트 핸들러 설정
         adapter.setOnItemClickListener(new OnBoardClickListener() {

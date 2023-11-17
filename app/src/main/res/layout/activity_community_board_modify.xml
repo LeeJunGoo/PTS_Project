@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Spinner
+                android:id="@+id/spBoardTitleList"
+                android:layout_width="380dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintEnd_toEndOf="@+id/edtTitle"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/edtTitle"
+                app:layout_constraintTop_toBottomOf="@+id/tvBoardTitle" />
+
+            <TextView
+                android:id="@+id/tvBoardTitle"
+                android:layout_width="380dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="40dp"
+                android:background="@drawable/shape_tetragon9"
+                android:gravity="center"
+                android:textSize="16sp"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView79" />
+
+            <TextView
+                android:id="@+id/tvModify"
+                android:layout_width="75dp"
+                android:layout_height="61dp"
+                android:gravity="center"
+                android:text="수정"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toTopOf="@+id/imageView79"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/edtContent"
+                android:layout_width="380dp"
+                android:layout_height="230dp"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/shape_tetragon9"
+                android:ems="10"
+                android:gravity="left"
+                android:hapticFeedbackEnabled="false"
+                android:hint="본문(필수) -최소 10자 ~ 500자 이내 작성할 수 있어요.\n게시물이 다른 유저로부터 신고를 받거나 운영 정책에 \n맞지 않을 경우 숨김 처리 돼요."
+                android:inputType="textMultiLine"
+                android:maxLength="501"
+                android:paddingStart="25dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="25dp"
+                android:selectAllOnFocus="false"
+                android:singleLine="true"
+                android:textColorHighlight="#C5E1A5"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/edtTitle" />
+
+            <ImageView
+                android:id="@+id/imgCancle"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:rotation="180"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/icon_back" />
+
+            <TextView
+                android:id="@+id/textView81"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="글수정"
+                android:textSize="24sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/imageView79"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView81"
+                app:srcCompat="@drawable/icon_line4" />
+
+            <EditText
+                android:id="@+id/edtTitle"
+                android:layout_width="380dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="80dp"
+                android:background="@drawable/shape_tetragon9"
+                android:ems="20"
+                android:hapticFeedbackEnabled="false"
+                android:hint="제목(필수) - “식물명”을 언급하면  찾기 수월해요"
+                android:inputType="textMultiLine"
+                android:paddingStart="25dp"
+                android:selectAllOnFocus="false"
+                android:singleLine="true"
+                android:textColorHighlight="#C5E1A5"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/spBoardTitleList" />
+
+            <LinearLayout
+                android:id="@+id/linearLayout6"
+                android:layout_width="380dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="50dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/edtContent">
+
+                <ImageButton
+                    android:id="@+id/imgBtnSelect"
+                    android:layout_width="120dp"
+                    android:layout_height="100dp"
+                    android:background="@drawable/shape_tetragon12"
+                    android:contentDescription="null"
+                    android:padding="35dp"
+                    android:scaleType="fitCenter"
+                    android:visibility="visible"
+                    app:srcCompat="@drawable/icon_camera" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcPhotoModify"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                </androidx.recyclerview.widget.RecyclerView>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvImgCount"
+                android:layout_width="380dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="0/5"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.483"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout6" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

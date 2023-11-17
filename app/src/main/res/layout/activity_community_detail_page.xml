@@ -187,17 +187,70 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout5" />
 
-            <Button
-                android:id="@+id/btnDelect"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/ConModify"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="#00FFFFFF"
-                android:text="삭제"
-                android:textColor="#000000"
-                android:textSize="16sp"
+                android:background="#00000000"
+                android:orientation="vertical"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnModify"
+                    android:layout_width="100dp"
+                    android:layout_height="50dp"
+                    android:background="#CC373737"
+                    android:text="수정"
+                    android:textColor="#FFFFFF"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btndelete"
+                    android:layout_width="100dp"
+                    android:layout_height="50dp"
+                    android:background="#CC373737"
+                    android:text="삭제"
+                    android:textColor="#FFFFFF"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btnModify" />
+
+                <Button
+                    android:id="@+id/btnClose"
+                    android:layout_width="0dp"
+                    android:layout_height="700dp"
+                    android:background="#00000000"
+                    android:textColor="#300404"
+                    android:textSize="48sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btndelete" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <ImageView
+                android:id="@+id/imgmodify"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="10dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/see4" />
+
+            <TextView
+                android:id="@+id/tvBoard_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="board_name"
+                app:layout_constraintEnd_toEndOf="@+id/tvDetailTitle"
+                app:layout_constraintStart_toStartOf="@+id/tvDetailTitle"
+                app:layout_constraintTop_toBottomOf="@+id/tvDetailTitle" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

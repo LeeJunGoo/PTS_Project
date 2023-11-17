@@ -11,20 +11,23 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-
+import com.bumptech.glide.Glide;
 import com.jica.pts.R;
 
 import java.util.List;
 
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder> {
     private List<Uri> photoUris;
-    private TextView selectedImageCountTextView; // 이미지 개수를 나타내는 TextView
-    int maxSelectableCount = 5;
+    private TextView selectedImageCountTextView; // 이미지 개수
+    int maxSelectableCount = 5; // 이미지 선택 가능한 개수
 
     public PhotoAdapter(List<Uri> photoUris, TextView selectedImageCountTextView) {
         this.photoUris = photoUris;
         this.selectedImageCountTextView = selectedImageCountTextView;
     }
+
+
+
 
     // 이미지 개수를 업데이트하는 메서드
     private void updatePhotoCountText() {
@@ -45,10 +48,13 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
 
     @Override
     public void onBindViewHolder(@NonNull PhotoViewHolder holder, int position) {
-        final Uri photoUri = photoUris.get(position);
+        Uri photoUri = photoUris.get(position);
 
-        // 이미지뷰에 이미지 설정
-        holder.photoImageView.setImageURI(photoUri);
+        // Glide를 사용하여 이미지 설정
+        Glide.with(holder.itemView.getContext())
+                .load(photoUri)
+                .into(holder.photoImageView);
+
 
         // "X" 버튼 클릭 이벤트 처리
         holder.removeImageView.setOnClickListener(new View.OnClickListener() {

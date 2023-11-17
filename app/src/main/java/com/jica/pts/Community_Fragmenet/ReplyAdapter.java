@@ -126,6 +126,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ReplyViewHol
             leftMargin=itemView.findViewById(R.id.leftMargin);
 
 
+
             //변경된 부분 2
             tvReply.setOnClickListener(new View.OnClickListener() {
                 @Override
