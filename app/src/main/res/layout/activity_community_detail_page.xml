@@ -75,6 +75,18 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <ImageView
+                android:id="@+id/imgNone"
+                android:layout_width="0dp"
+                android:layout_height="400dp"
+                android:scaleType="fitXY"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@+id/layoutIndicators"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/sliderViewPager"
+                app:srcCompat="@drawable/background_no_image" />
+
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/sliderViewPager"
                 android:layout_width="0dp"
@@ -84,7 +96,9 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout10" />
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout10" >
+
+            </androidx.viewpager2.widget.ViewPager2>
 
             <LinearLayout
                 android:id="@+id/layoutIndicators"

@@ -17,12 +17,9 @@ import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.jica.pts.Abc.AlarmCenterActivity;
 import com.jica.pts.Abc.PlantRegisterActivity1;
 import com.jica.pts.Login.UserTotalLoginActivity;
 import com.jica.pts.R;
@@ -62,7 +59,6 @@ public class FragmentPlantManagement extends Fragment {
     String dateData = new String();
 
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
@@ -75,7 +71,6 @@ public class FragmentPlantManagement extends Fragment {
 
         //Fragment 자체의 xml layout file을 전개
         View fragmentView = inflater.inflate(R.layout.fragment_main_plant_management, container, false);
-
 
 
         //firebase 연결
@@ -95,8 +90,6 @@ public class FragmentPlantManagement extends Fragment {
         tvsetting = fragmentView.findViewById(R.id.tvsetting);
         btnsmLogin = fragmentView.findViewById(R.id.btnsmLogin);
         tvsmLogout = fragmentView.findViewById(R.id.tvsmLogout);
-
-
 
 
         //date 생성
@@ -182,9 +175,9 @@ public class FragmentPlantManagement extends Fragment {
                 } else {
                     //사이드 메뉴 VISIBLE로 변경
                     sidemenu.setVisibility(View.VISIBLE);
-                   //사이드메뉴 안에 있는 하위 구성 요소들을 ViISIBLE로 변경
+                    //사이드메뉴 안에 있는 하위 구성 요소들을 ViISIBLE로 변경
                     sidemenu.startAnimation(translateLeftAnim);
-                    for (int i= 0; i< sidemenu.getChildCount(); i++){
+                    for (int i = 0; i < sidemenu.getChildCount(); i++) {
                         sidemenu.getChildAt(i).setVisibility(View.VISIBLE);
                     }
 
@@ -219,17 +212,13 @@ public class FragmentPlantManagement extends Fragment {
                 //사이드바 내부 이벤트 핸들러
                 //1. 알림센터
             } else if (curId == R.id.tvalarm) {
-                Intent intent = new Intent(getActivity(), AlarmCenterActivity.class);
-                startActivity(intent);
+                Toast.makeText(getActivity(), "지원 예정 서비스입니다.", Toast.LENGTH_SHORT).show();
+                /*Intent intent = new Intent(getActivity(), AlarmCenterActivity.class);
+                startActivity(intent);*/
 
                 //2. 프로필
             } else if (curId == R.id.tvprofile) {
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                FragmentProfile fragmentProfile = new FragmentProfile();
-                transaction.replace(R.id.container, fragmentProfile).commit();
-
-                BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottom_navigation);
-                bottomNavigationView.setSelectedItemId(R.id.profile);
+                Toast.makeText(getActivity(), "지원 예정 서비스입니다.", Toast.LENGTH_SHORT).show();
 
                 // 3. 로그인
             } else if (curId == R.id.btnsmLogin) {
@@ -244,9 +233,11 @@ public class FragmentPlantManagement extends Fragment {
 
                 //5. 캘린더
             } else if (curId == R.id.tvcalendar) {
+                Toast.makeText(getActivity(), "지원 예정 서비스입니다.", Toast.LENGTH_SHORT).show();
 
                 //6. 환경설정
             } else if (curId == R.id.tvsetting) {
+                Toast.makeText(getActivity(), "지원 예정 서비스입니다.", Toast.LENGTH_SHORT).show();
 
             }
         }
@@ -259,8 +250,8 @@ public class FragmentPlantManagement extends Fragment {
             //슬라이드 열기->닫기
             if (isPageOpen) {
                 //애니메이션 효과가 끝난 이후에 구성요소들을 GONE형태로 바꿔야 자연스럽게 연결된다.
-                for (int i= 0; i< sidemenu.getChildCount(); i++){
-                   sidemenu.getChildAt(i).setVisibility(View.GONE);
+                for (int i = 0; i < sidemenu.getChildCount(); i++) {
+                    sidemenu.getChildAt(i).setVisibility(View.GONE);
                 }
 
                 imgmenu.setClickable(true);

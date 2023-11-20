@@ -18,7 +18,6 @@ import java.util.ArrayList;
 
 public class MainBoardAdapter extends RecyclerView.Adapter<MainBoardAdapter.MainBoardViewHolder> implements OnMainBoardClickListeners {
     ArrayList<Board> NewArrayList;
-    ArrayList<Board> HotArrayList;
     Context context;
     OnMainBoardClickListeners listener;
 
@@ -41,15 +40,18 @@ public class MainBoardAdapter extends RecyclerView.Adapter<MainBoardAdapter.Main
 
     @Override
     public void onBindViewHolder(@NonNull MainBoardViewHolder holder, int position) {
-
-        Glide.with(holder.itemView)
-                .load(NewArrayList.get(position).getBoard_photo1())
-                .into(holder.imgPhoto1);
+        if (NewArrayList.get(position).getBoard_photo1() != null) {
+            Glide.with(holder.itemView)
+                    .load(NewArrayList.get(position).getBoard_photo1())
+                    .into(holder.imgPhoto1);
+        } else {
+            holder.imgPhoto1.setImageResource(R.drawable.background_no_image);
+        }
 
         //Board 객체에서 가공하여 holder에 저장
         holder.tvTitle.setText(NewArrayList.get(position).getBoard_title());
 
-        switch (NewArrayList.get(position).getBoard_name()){
+        switch (NewArrayList.get(position).getBoard_name()) {
             case "새식물 자랑":
                 holder.tvBoardType.setBackgroundResource(R.drawable.shape_tetragon13);
                 break;
@@ -69,7 +71,7 @@ public class MainBoardAdapter extends RecyclerView.Adapter<MainBoardAdapter.Main
     public int getItemCount() {
 
 
-        return (NewArrayList != null  ? NewArrayList.size() : 0);
+        return (NewArrayList != null ? NewArrayList.size() : 0);
     }
 
     //변경된 부분4

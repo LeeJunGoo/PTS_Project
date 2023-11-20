@@ -1,30 +1,28 @@
 package com.jica.pts.Community_Fragmenet;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.jica.pts.Community_Fragmenet.CommunityBoardWriteActivity;
 import com.jica.pts.R;
 
 public class CommunityProfileActivity extends AppCompatActivity {
 
     //UI 객체 선언
     Button btnpost;
-   TextView tvBoardCount;
-   TextView tvBoardID;
+    TextView tvBoardCount;
+    TextView tvBoardID;
 
-   FirebaseFirestore db;
-   FirebaseAuth firebaseAuth;
+    FirebaseFirestore db;
+    FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,14 +31,13 @@ public class CommunityProfileActivity extends AppCompatActivity {
 
 
         //UI 객체 찾기
-        btnpost= findViewById(R.id.btnpost);
+        btnpost = findViewById(R.id.btnpost);
         tvBoardCount = findViewById(R.id.tvBoardCount);
         tvBoardID = findViewById(R.id.tvBoardID);
 
         db = FirebaseFirestore.getInstance();
-        firebaseAuth= FirebaseAuth.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser user = firebaseAuth.getCurrentUser();
-
 
 
         //아이디 불러오기
@@ -48,9 +45,9 @@ public class CommunityProfileActivity extends AppCompatActivity {
 
 
         //게시글 수 불러오기
-        db.collection("Board").whereEqualTo("user_id", user.getEmail()).get()
+        db.collection("Board").whereEqualTo("board_del", false).whereEqualTo("user_id", user.getEmail()).get()
                 .addOnCompleteListener(task -> {
-                    if(task.isSuccessful()){
+                    if (task.isSuccessful()) {
                         QuerySnapshot querySnapshot = task.getResult();
                         String Board_cnt = String.valueOf(querySnapshot.size());
                         tvBoardCount.setText(Board_cnt);
@@ -68,8 +65,6 @@ public class CommunityProfileActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-
 
 
     }

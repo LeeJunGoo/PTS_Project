@@ -141,9 +141,11 @@ public class CommunityBoardModifyActivity extends AppCompatActivity {
         maxSelectableCount = photoAdapter.maxSelectableCount;
 
         //Storage에 저장된 이미지 파일 불러오기
-        for (String imageUrl : board_photo) {
-            downloadAndAddImage(imageUrl);
-        }
+           for (String imageUrl : board_photo) {
+                   downloadAndAddImage(imageUrl);
+
+           }
+
 
 
         imgBtnSelect.setOnClickListener(new View.OnClickListener() {
@@ -417,7 +419,7 @@ public class CommunityBoardModifyActivity extends AppCompatActivity {
         Map<String, Object> like = new HashMap<>();
 
         for (int j = 1; j <= 5; j++) {
-            like.put("board_photo" + j, "");
+            like.put("board_photo" + j, null);
         }
         db.collection("Board").document(String.valueOf(nextDocumentId)).update(like)
                 .addOnCompleteListener(task -> {

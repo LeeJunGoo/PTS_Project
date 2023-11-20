@@ -38,6 +38,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.jica.pts.Bean.Board;
+import com.jica.pts.MainFragment.BottomTabActivity;
 import com.jica.pts.R;
 
 import java.util.ArrayList;
@@ -67,7 +68,6 @@ public class CommunityBoardWriteActivity extends AppCompatActivity {
     //DB 객체 선언
     FirebaseFirestore db;
     FirebaseStorage storage;
-
 
 
     @Override
@@ -224,7 +224,7 @@ public class CommunityBoardWriteActivity extends AppCompatActivity {
                             //DB 저장(!!) 및 엑티비티 이동
                             saveBoardDataWithNextDocumentId();
 
-                            Intent intent = new Intent(getApplicationContext(), CommunityProfileActivity.class);
+                            Intent intent = new Intent(getApplicationContext(), BottomTabActivity.class);
                             startActivity(intent);
                             finish();
                         }
@@ -259,7 +259,7 @@ public class CommunityBoardWriteActivity extends AppCompatActivity {
         String fileName = "photo" + System.currentTimeMillis() + ".jpg";
 
         // 이미지를 업로드할 경로와 파일 이름 설정
-        String uploadPath = "images/PTS/"+nextDocumentId+"/" + fileName;
+        String uploadPath = "images/PTS/" + nextDocumentId + "/" + fileName;
 
         // StorageReference를 사용하여
         // DB(Storage)에 경로 및 파일 이름 설정
@@ -281,7 +281,7 @@ public class CommunityBoardWriteActivity extends AppCompatActivity {
                         String downloadUrl = uri.toString();
                         updateBoardDownloadUrl(nextDocumentId, downloadUrl, i);
 
-                        Log.d("i", "두번쨰 I:"+ i);
+                        Log.d("i", "두번쨰 I:" + i);
 
                     }
 
@@ -302,14 +302,14 @@ public class CommunityBoardWriteActivity extends AppCompatActivity {
         board.setBoard_photo1(downloadUrl);*/
 
         Map<String, Object> like = new HashMap<>();
-        like.put("board_photo"+i, downloadUrl);
+        like.put("board_photo" + i, downloadUrl);
 
 
         db.collection("Board").document(String.valueOf(nextDocumentId)).update(like)
                 .addOnCompleteListener(task -> {
-                    if(task.isSuccessful()){
+                    if (task.isSuccessful()) {
 
-                        Log.d("i", "세번 째 I:"+i);
+                        Log.d("i", "세번 째 I:" + i);
 
                     }
                 });
@@ -333,7 +333,7 @@ public class CommunityBoardWriteActivity extends AppCompatActivity {
                         Uri imageUri = data.getClipData().getItemAt(i).getUri();
                         selectedImageUris.add(imageUri);
                         if (selectedImageUris.size() >= maxSelectableCount) {
-                            Toast.makeText(getApplicationContext(), "이미지는 최대" +  maxSelectableCount + "개까지 업로드 가능합니다", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "이미지는 최대" + maxSelectableCount + "개까지 업로드 가능합니다", Toast.LENGTH_SHORT).show();
                         }
                         currentSelectedCount++;
                     }
@@ -353,8 +353,8 @@ public class CommunityBoardWriteActivity extends AppCompatActivity {
 
                     selectImagesButton.setVisibility(View.GONE);
 
-                addTextWatcherForMaxLengths(selectedImageCountTextView, maxSelectableCount);
-                // ------------------------------------------------------------------------
+                    addTextWatcherForMaxLengths(selectedImageCountTextView, maxSelectableCount);
+                    // ------------------------------------------------------------------------
 
 
                 }
@@ -397,8 +397,8 @@ public class CommunityBoardWriteActivity extends AppCompatActivity {
                             // 이미지를 하나씩 업로드
                             // selectedImageUris 저장된 이미지를 Uri imageUri 객체로 선언하여 하나씩 업로드
                             for (Uri imageUri : selectedImageUris) {
-                                uploadImage(imageUri, (int)nextDocumentId, i);
-                              //  Log.d("i", "첫번째 I:"+i);
+                                uploadImage(imageUri, (int) nextDocumentId, i);
+                                //  Log.d("i", "첫번째 I:"+i);
                                 i++;
 
                             }
@@ -413,7 +413,7 @@ public class CommunityBoardWriteActivity extends AppCompatActivity {
                             // 이미지를 하나씩 업로드
                             // selectedImageUris 저장된 이미지의 uri를 Uri 객체로 선언하여 하나씩 업로드
                             for (Uri imageUri : selectedImageUris) {
-                                uploadImage(imageUri,1, i);
+                                uploadImage(imageUri, 1, i);
                                 i++;
                             }
 
@@ -458,7 +458,6 @@ public class CommunityBoardWriteActivity extends AppCompatActivity {
         board.setUser_id(currentUser != null ? currentUser.getEmail() : ""); // currentUser가 null이 아닌지 확인 후 getEmail 호출
         board.setBoard_date(date);
         board.setBoard_number((int) documentId);
-
 
 
         // 컬렉션(Board)에 사용자가 정의한 문서(document) 이름(식별자) 및 필드(field) 데이터 추가

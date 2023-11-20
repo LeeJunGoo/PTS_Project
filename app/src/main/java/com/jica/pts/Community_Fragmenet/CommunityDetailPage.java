@@ -65,7 +65,7 @@ public class CommunityDetailPage extends AppCompatActivity {
     //UI 객체 선언
     TextView tvDetailTitle, tvDetailId, tvDetailTime, tvDetailContent, tvDetailCount, tvDetailCount2, tvBoard_name;
     EditText etReply, etSubReply;
-    ImageView imgmodify;
+    ImageView imgmodify, imgNone;
     ImageButton imgGreat, imgReplyCheck, imgbtnReply, imgSubReplyCheck;
     Button btndelete, btnClose, btnModify;
     LinearLayout LinearReply, LinearSubReply;
@@ -79,7 +79,6 @@ public class CommunityDetailPage extends AppCompatActivity {
     private ArrayList<String> photoUris = new ArrayList<>();
 
 
-
     //댓글 객체 선언1)
     private RecyclerView rcReply;
     private ReplyAdapter replyAdapter;
@@ -90,8 +89,7 @@ public class CommunityDetailPage extends AppCompatActivity {
     FirebaseFirestore db;
     FirebaseAuth firebaseAuth;
     FirebaseUser CurrentUser;
-
-
+    FirebaseStorage storage;
 
 
     @Override
@@ -108,19 +106,19 @@ public class CommunityDetailPage extends AppCompatActivity {
         tvDetailCount2 = findViewById(R.id.tvDetailCount2);
         etReply = findViewById(R.id.etReply);
         etSubReply = findViewById(R.id.etSubReply);
-        imgmodify= findViewById(R.id.imgmodify);
+        imgmodify = findViewById(R.id.imgmodify);
         imgGreat = findViewById(R.id.imgGreat);
         btndelete = findViewById(R.id.btndelete);
         imgReplyCheck = findViewById(R.id.imgReplyCheck);
-        imgSubReplyCheck= findViewById(R.id.imgSubReplyCheck);
-        imgbtnReply= findViewById(R.id.imgbtnReply);
-        LinearReply= findViewById(R.id.LinearReply);
-        LinearSubReply= findViewById(R.id.LinearSubReply);
-        ConModify= findViewById(R.id.ConModify);
-        btnClose= findViewById(R.id.btnClose);
-        btnModify= findViewById(R.id.btnModify);
-        tvBoard_name= findViewById(R.id.tvBoard_name);
-
+        imgSubReplyCheck = findViewById(R.id.imgSubReplyCheck);
+        imgbtnReply = findViewById(R.id.imgbtnReply);
+        LinearReply = findViewById(R.id.LinearReply);
+        LinearSubReply = findViewById(R.id.LinearSubReply);
+        ConModify = findViewById(R.id.ConModify);
+        btnClose = findViewById(R.id.btnClose);
+        btnModify = findViewById(R.id.btnModify);
+        tvBoard_name = findViewById(R.id.tvBoard_name);
+        imgNone = findViewById(R.id.imgNone);
 
 
         //댓글 객체 찾기
@@ -153,12 +151,12 @@ public class CommunityDetailPage extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
         CurrentUser = firebaseAuth.getCurrentUser();
+        storage = FirebaseStorage.getInstance();
+
 
         //FragmentPlayGroundCommunity에서 저장(putExtra)한 문서(document)번호를 intent 객체로 불러오기
         Intent BoardIntent = getIntent();
         Board_number = Integer.valueOf(BoardIntent.getStringExtra("Board_number"));
-
-
 
 
         //Firebase Storage에서 파일 목록 불러오기
@@ -182,13 +180,13 @@ public class CommunityDetailPage extends AppCompatActivity {
         }
 
 
-       imgmodify.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View view) {
-             ConModify.setVisibility(View.VISIBLE);
-             imgmodify.setVisibility(View.GONE);
-           }
-       });
+        imgmodify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ConModify.setVisibility(View.VISIBLE);
+                imgmodify.setVisibility(View.GONE);
+            }
+        });
 
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -198,7 +196,6 @@ public class CommunityDetailPage extends AppCompatActivity {
 
             }
         });
-
 
 
         //삭제 버튼 이벤트 핸들러
@@ -213,17 +210,16 @@ public class CommunityDetailPage extends AppCompatActivity {
         btnModify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                        Intent intent = new Intent(getApplicationContext(),CommunityBoardModifyActivity.class);
-                        intent.putExtra("Board_number", Board_number+"");
-                        intent.putExtra("board_title" , tvDetailTitle.getText().toString());
-                        intent.putExtra("board_name",  tvBoard_name.getText().toString());
-                        intent.putExtra("board_content", tvDetailContent.getText().toString());
-                        intent.putStringArrayListExtra("board_photo", photoUris);
-                        startActivity(intent);
-                        finish();
+                Intent intent = new Intent(getApplicationContext(), CommunityBoardModifyActivity.class);
+                intent.putExtra("Board_number", Board_number + "");
+                intent.putExtra("board_title", tvDetailTitle.getText().toString());
+                intent.putExtra("board_name", tvBoard_name.getText().toString());
+                intent.putExtra("board_content", tvDetailContent.getText().toString());
+                intent.putStringArrayListExtra("board_photo", photoUris);
+                startActivity(intent);
+                finish();
             }
         });
-
 
 
         //댓글 클릭 이벤트 핸들러
@@ -247,12 +243,12 @@ public class CommunityDetailPage extends AppCompatActivity {
                     saveReply(Board_number, Integer.valueOf(tvDetailCount2.getText().toString()));
 
                     // 입력 후 키패드 내리기
-                    InputMethodManager manager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                    InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                     manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                     LinearReply.setVisibility(View.GONE);
                     imgbtnReply.setSelected(false);
 
-                }else {
+                } else {
                     Toast.makeText(CommunityDetailPage.this, "내용을 입력해주세요", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -262,27 +258,27 @@ public class CommunityDetailPage extends AppCompatActivity {
         replyAdapter.setOnItemClickListener(new OnReplyClickListener() {
             @Override
             public void onItemClick(ReplyAdapter.ReplyViewHolder viewHolder, View view, int position) {
-                    handleSubReplyButtonClick();
-                    imgSubReplyCheck.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            if (!(etSubReply.getText().toString().equals(""))) {
-                                saveReplyDataWithNextDocumentId(Board_number, 2, position);
+                handleSubReplyButtonClick();
+                imgSubReplyCheck.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (!(etSubReply.getText().toString().equals(""))) {
+                            saveReplyDataWithNextDocumentId(Board_number, 2, position);
 
-                                // 입력 후 키패드 내리기
-                                InputMethodManager manager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-                                manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-                                LinearSubReply.setVisibility(View.GONE);
-                                isSubReply = false;
-                            }else {
-                                Toast.makeText(CommunityDetailPage.this, "내용을 입력해주세요", Toast.LENGTH_SHORT).show();
-                                
-                            }
+                            // 입력 후 키패드 내리기
+                            InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                            manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                            LinearSubReply.setVisibility(View.GONE);
+                            isSubReply = false;
+                        } else {
+                            Toast.makeText(CommunityDetailPage.this, "내용을 입력해주세요", Toast.LENGTH_SHORT).show();
 
                         }
-                    });
-              
-               
+
+                    }
+                });
+
+
             }
         });
 
@@ -304,7 +300,7 @@ public class CommunityDetailPage extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 ConModify.setVisibility(View.GONE);
-                isModify= false;
+                isModify = false;
             }
         });
     }
@@ -317,7 +313,7 @@ public class CommunityDetailPage extends AppCompatActivity {
         if (CurrentUser != null) {
             //좋아요 버튼 유효성 검사
             // !isProcessingClick을 통해 postDelayed의 정상작동을 확인 후 좋아요 기능 수행
-            if(!isProcessingClick){
+            if (!isProcessingClick) {
                 isProcessingClick = true;
                 imgGreat.setEnabled(false);   //버튼 클릭 후 비활성화
                 if (imgGreat.isSelected()) {
@@ -343,7 +339,7 @@ public class CommunityDetailPage extends AppCompatActivity {
             }
 
         } else {
-                LoginDialog();
+            LoginDialog();
         }
 
 
@@ -355,7 +351,7 @@ public class CommunityDetailPage extends AppCompatActivity {
     private void handleReplyButtonClick() {
         if (CurrentUser != null) {
             if (imgbtnReply.isSelected()) {
-               LinearReply.setVisibility(View.GONE);
+                LinearReply.setVisibility(View.GONE);
             } else {
                 LinearReply.setVisibility(View.VISIBLE);
                 LinearSubReply.setVisibility(View.GONE);
@@ -364,7 +360,7 @@ public class CommunityDetailPage extends AppCompatActivity {
                 isSubReply = false;
 
             }
-             imgbtnReply.setSelected(!imgbtnReply.isSelected());
+            imgbtnReply.setSelected(!imgbtnReply.isSelected());
         } else {
             LoginDialog();
         }
@@ -413,7 +409,6 @@ public class CommunityDetailPage extends AppCompatActivity {
         alertDialog.show();
 
     }
-
 
 
     private void handleDeleteButtonClick(int Board_number) {
@@ -506,7 +501,6 @@ public class CommunityDetailPage extends AppCompatActivity {
     }
 
 
-
     // 현재 댓글 정보 UI 화면에 보여주기 및 댓글 정렬의 핵심 부분이다.!!
     // 댓글 및 대댓글 정렬 기준은 reply_check_revel로 설정
     // 형식: "댓글시간" "-" "대댓글 시간" (날짜를 문자 형식으로 받아온다.)
@@ -535,9 +529,9 @@ public class CommunityDetailPage extends AppCompatActivity {
     //1. Board 컬렉션에 board_reply(댓글 수) 증가
     //2. Reply 컬렉션에 입력한 댓글정보 저장
     //3. 입력한 댓글 내용 화면에 뿌려주기
-    private void saveReply(int Board_number, int reply_Count){
+    private void saveReply(int Board_number, int reply_Count) {
         db.collection("Board").document(String.valueOf(Board_number))
-                .update("board_reply", reply_Count+1).addOnCompleteListener(new OnCompleteListener<Void>() {
+                .update("board_reply", reply_Count + 1).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         //댓글 수 읽어오기
@@ -605,12 +599,12 @@ public class CommunityDetailPage extends AppCompatActivity {
         reply.setReply_date(timestamp);
         reply.setReply_number((int) nextDocumentId);
 
-    if(revel == 1){
-        reply.setReply_content(etReply.getText().toString());
+        if (revel == 1) {
+            reply.setReply_content(etReply.getText().toString());
             reply.setReply_revel(revel);
             reply.setReply_check_revel(reply_date);
 
-        }else if (revel == 2){
+        } else if (revel == 2) {
             reply.setReply_content(etSubReply.getText().toString());
             String ReplyRevel = replyArrayList.get(position).getReply_check_revel();
             reply.setReply_revel(revel);
@@ -640,42 +634,42 @@ public class CommunityDetailPage extends AppCompatActivity {
     }
 
 
-
     private void loadPhotosFromFirebaseStorage(int document) {
-        // Firebase Storage 초기화
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-
         // Firebase Storage의 "images/" 경로에 있는 파일 목록을 가져옵니다.
         storage.getReference().child("images/PTS/" + document).listAll().addOnCompleteListener(new OnCompleteListener<ListResult>() {
 
             @Override
             public void onComplete(@NonNull Task<ListResult> task) {
                 if (task.isSuccessful()) {
-                    // 가져온 파일 목록을 순회하면서 URI를 추출하여 리스트에 추가합니다.
-                    for (com.google.firebase.storage.StorageReference item : task.getResult().getItems()) {
-                        item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                            @Override
-                            public void onSuccess(Uri uri) {
-                                // URI를 String 형변환 후 대입 성공적으로 가져왔을 때 처리
-                                photoUris.add(uri.toString());
-                                setupIndicators(photoUris.size());
+                    // 파일 목록이 비어있을 때 처리
+                    if (task.getResult().getItems().isEmpty()) {
+                        imgNone.setVisibility(View.VISIBLE);
+                    } else {
+                        // 가져온 파일 목록을 순회하면서 URI를 추출하여 리스트에 추가합니다.
+                        for (com.google.firebase.storage.StorageReference item : task.getResult().getItems()) {
+                            item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    // URI를 String 형변환 후 대입 성공적으로 가져왔을 때 처리
+                                    photoUris.add(uri.toString());
+                                    setupIndicators(photoUris.size());
 
-                                adapter.notifyDataSetChanged();
+                                    adapter.notifyDataSetChanged();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.e("TAG", "Error fetching download URL", e);
 
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.e("TAG", "Error fetching download URL", e);
-
-                                // URI를 가져오지 못했을 때 처리
-                                e.printStackTrace();
-                            }
-                        });
+                                    // URI를 가져오지 못했을 때 처리
+                                    e.printStackTrace();
+                                }
+                            });
+                        }
                     }
                 } else {
 
-                   Log.d("TAG", "CommunityDetailPage의 loadPhotosFromFirebaseStorage 쿼리문에서 error 발생", task.getException());
+                    Log.d("TAG", "CommunityDetailPage의 loadPhotosFromFirebaseStorage 쿼리문에서 error 발생", task.getException());
                 }
             }
         });
@@ -741,8 +735,8 @@ public class CommunityDetailPage extends AppCompatActivity {
                                     .document(CurrentUser.getUid())
                                     .set(like);
                         }
-                    }else {
-                        Log.d("TAG","CommunityDetailPage의 checkLike 쿼리문에서 오류 발생", task.getException());
+                    } else {
+                        Log.d("TAG", "CommunityDetailPage의 checkLike 쿼리문에서 오류 발생", task.getException());
                     }
                 });
     }
@@ -758,7 +752,7 @@ public class CommunityDetailPage extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         QuerySnapshot querySnapshot = task.getResult();
-                           //쿼리 결과가 존재하지 않을 경우
+                        //쿼리 결과가 존재하지 않을 경우
                         if (querySnapshot.isEmpty()) {
                             //Toast.makeText(getApplicationContext(), "좋아요 누르지 않은 상태", Toast.LENGTH_SHORT).show();
                             imgGreat.setSelected(false); // 좋아요 버튼 해제
@@ -770,7 +764,7 @@ public class CommunityDetailPage extends AppCompatActivity {
                             imgGreat.setImageResource(R.drawable.icon_like); // 좋아요 버튼 이미지 변경
                         }
                     } else {
-                       Log.d("TAG", "CommunityDetailPage의 checkUID 쿼리문에서 오류 발생", task.getException());
+                        Log.d("TAG", "CommunityDetailPage의 checkUID 쿼리문에서 오류 발생", task.getException());
                     }
                 });
     }
@@ -787,9 +781,9 @@ public class CommunityDetailPage extends AppCompatActivity {
                         db.collection("Board").document(String.valueOf(board_number)).collection("Like").document(CurrentUser.getUid())
                                 .update(CurrentUser.getUid(), true)
                                 .addOnCompleteListener(task -> {
-                                    if(task.isSuccessful()){
+                                    if (task.isSuccessful()) {
                                         GreatUpCount(board_number);
-                                    }else {
+                                    } else {
                                         Log.d("TAG", "CommunuityDetailPage의 setGreatUp update 쿼리문에서 error 발생", task.getException());
                                     }
                                 });
@@ -844,7 +838,7 @@ public class CommunityDetailPage extends AppCompatActivity {
     }
 
 
-  //DB에 새로 저장한 좋아요 개수를 현재 UI화면에 적용하기(뿌려주기)
+    //DB에 새로 저장한 좋아요 개수를 현재 UI화면에 적용하기(뿌려주기)
     private void GreatUpCount(int board_number) {
         String documentId = String.valueOf(board_number);
         DocumentReference docRef = db.collection("Board").document(documentId);
@@ -875,30 +869,28 @@ public class CommunityDetailPage extends AppCompatActivity {
     }
 
 
-
-
-  //DB에 새로 저장한 댓글 개수를 실시간으로 UI화면에 적용하기(뿌려주기)
+    //DB에 새로 저장한 댓글 개수를 실시간으로 UI화면에 적용하기(뿌려주기)
     private void ReplyUpCount(int board_number) {
         String documentId = String.valueOf(board_number);
-        DocumentReference DocRef =db.collection("Board").document(String.valueOf(board_number));
+        DocumentReference DocRef = db.collection("Board").document(String.valueOf(board_number));
 
         DocRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                        if(e != null){
-                            // 에러 처리
-                            return;
-                        }
-                        if (documentSnapshot != null && documentSnapshot.exists()){
-                            // 문서가 존재하고 업데이트되었을 때 실행됩니다.
-                            Long ReplyCount = documentSnapshot.getLong("board_reply");
-                            if (ReplyCount != null){
-                                tvDetailCount2.setText(String.valueOf(ReplyCount));
-                            }
-                        }
-
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    // 에러 처리
+                    return;
+                }
+                if (documentSnapshot != null && documentSnapshot.exists()) {
+                    // 문서가 존재하고 업데이트되었을 때 실행됩니다.
+                    Long ReplyCount = documentSnapshot.getLong("board_reply");
+                    if (ReplyCount != null) {
+                        tvDetailCount2.setText(String.valueOf(ReplyCount));
                     }
-                });
+                }
+
+            }
+        });
     }
 
 
@@ -925,8 +917,6 @@ public class CommunityDetailPage extends AppCompatActivity {
                         Log.d("TAG", "CommunityDetailPage의 GreatUpCount 쿼리문에서 error 발생", e);
                     }
                 });*/
-
-
 
 
 }
